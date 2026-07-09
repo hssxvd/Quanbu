@@ -1,0 +1,34 @@
+server:
+  port: 9091
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rongxiaotong?serverTimezone=GMT%2B8&useUnicode=true&characterEncodeing=UTF-8&useSSL=false
+    username: root
+    password: 123456
+  web:
+    resources:
+      static-locations: file:${application.upload-path}
+  mvc:
+    static-path-pattern: file:d:/wangyanan/file/info
+application:
+  upload-path: d:/wangyanan/file/info
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+# 分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+bank:
+  bankid: 1001
+swagger:
+  print-init: true #非必需,默认true
+  enabled: true #非必需,默认true
+  docket:
+    base-package: com.qst.financing.controller   #必需
+
