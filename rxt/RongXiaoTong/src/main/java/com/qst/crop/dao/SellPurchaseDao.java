@@ -11,5 +11,6 @@ public interface SellPurchaseDao {
 
     int insertSelective(SellPurchase record);
 
+    List<SellPurchase> selectByName(@Param("ownName")String ownName);
 
 }
