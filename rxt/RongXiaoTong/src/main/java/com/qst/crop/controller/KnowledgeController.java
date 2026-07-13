@@ -1,0 +1,41 @@
+package com.qst.crop.controller;
+
+import com.qst.crop.common.Result;
+import com.qst.crop.common.StatusCode;
+import com.qst.crop.entity.Knowledge;
+import com.qst.crop.service.KnowledgeService;
+import com.github.pagehelper.PageInfo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@Tag(name = "知识模块接口")
+@RestController
+@RequestMapping("/knowledge")
+@CrossOrigin
+public class KnowledgeController {
+    @Autowired
+    private KnowledgeService knowledgeService;
+
+    @Operation(summary = "分页查询所有知识")
+    @GetMapping("/{pageNum}")
+    public Result<PageInfo<Knowledge>> findPage(@PathVariable Integer pageNum) {
+        PageInfo<Knowledge> knowledgePageInfo = knowledgeService.findPage(pageNum);
+        return new Result<PageInfo<Knowledge>>(true, StatusCode.OK, "查询成功", knowledgePageInfo);
+    }
+
+    @Operation(summary = "根据id查询知识")
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable("id") Integer id) {
+        Knowledge knowledge = knowledgeService.selectById(id);
+        return new Result(true, StatusCode.OK, "查询成功", knowledge);
+    }
+
+    @Operation(summary = "分页条件查询所有知识")
+    @GetMapping("/{keys}/{pageNum}")
+    public Result<PageInfo<Knowledge>> findPageByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        PageInfo<Knowledge> knowledgePageInfo = knowledgeService.findPageByKeys(keys, pageNum);
+        return new Result<PageInfo<Knowledge>>(true, StatusCode.OK, "查询成功", knowledgePageInfo);
+    }
+}
