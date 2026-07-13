@@ -30,19 +30,38 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String token = request.getHeader(jwtTokenUtil.getHeader());
+        System.out.println("JwtAuthenticationTokenFilter - 请求路径: " + request.getRequestURI());
+        System.out.println("JwtAuthenticationTokenFilter - Authorization头: " + token);
+        
         if (StringUtils.hasText(token)) {
-            String username = jwtTokenUtil.getUsernameFromToken(token);
-
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtTokenUtil.validateToken(token, userDetails)) {
-                    // 将用户信息存入 authentication，方便后续校验
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    // 将 authentication 存入 ThreadLocal，方便后续获取用户信息
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7).trim();
+                System.out.println("JwtAuthenticationTokenFilter - 去掉Bearer后的token: " + token);
+                System.out.println("JwtAuthenticationTokenFilter - token长度: " + token.length());
+                
+                String username = jwtTokenUtil.getUsernameFromToken(token);
+                System.out.println("JwtAuthenticationTokenFilter - 解析出的用户名: " + username);
+                
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    System.out.println("JwtAuthenticationTokenFilter - 加载的用户: " + userDetails.getUsername());
+                    
+                    if (jwtTokenUtil.validateToken(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        System.out.println("JwtAuthenticationTokenFilter - Token验证成功，已设置认证信息");
+                    } else {
+                        System.out.println("JwtAuthenticationTokenFilter - Token验证失败");
+                    }
+                } else {
+                    System.out.println("JwtAuthenticationTokenFilter - 用户名为空或已有认证信息");
                 }
+            } else {
+                System.out.println("JwtAuthenticationTokenFilter - Token格式不正确，缺少Bearer前缀");
             }
+        } else {
+            System.out.println("JwtAuthenticationTokenFilter - 未找到Authorization头");
         }
         chain.doFilter(request, response);
     }

@@ -54,6 +54,7 @@ public class JwtTokenUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
+            System.out.println("JwtTokenUtil - 解析Token失败: " + e.getClass().getName() + " - " + e.getMessage());
             return null;
         }
     }

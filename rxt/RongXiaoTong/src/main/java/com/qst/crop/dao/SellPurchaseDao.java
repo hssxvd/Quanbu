@@ -1,0 +1,15 @@
+package com.qst.crop.dao;
+
+import com.qst.crop.entity.SellPurchase;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+@Mapper
+public interface SellPurchaseDao {
+
+    int insertSelective(SellPurchase record);
+
+
+}

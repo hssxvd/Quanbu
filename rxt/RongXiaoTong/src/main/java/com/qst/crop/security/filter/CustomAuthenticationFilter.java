@@ -41,6 +41,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
+        response.flushBuffer();
     }
 
     private boolean isJsonRequest(HttpServletRequest request) {
