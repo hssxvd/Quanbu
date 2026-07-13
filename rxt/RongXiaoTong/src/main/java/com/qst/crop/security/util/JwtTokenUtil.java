@@ -21,7 +21,7 @@ import java.util.Map;
 @Data
 @Component
 public class JwtTokenUtil {
-    private static final String SECRET_STRING = "qst123456789012345678901234567890123456789012345678901234567890";
+    private static final String SECRET_STRING = "qst12345678901234567890123456789012345678901234567890123456789012";
     private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_STRING.getBytes(StandardCharsets.UTF_8));
     // 过期时间 毫秒
     private static final Long expiration = 3600000L;

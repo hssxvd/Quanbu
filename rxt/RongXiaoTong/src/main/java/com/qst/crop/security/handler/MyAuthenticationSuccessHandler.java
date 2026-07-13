@@ -40,11 +40,12 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
      */
     public void renderToken(HttpServletResponse response, String token) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
-        ServletOutputStream out = response.getOutputStream();
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
 
         String str = JSON.toJSONString(new Result<String>(true, StatusCode.OK, "登陆成功", token));
-        out.write(str.getBytes("UTF-8"));
-        out.flush();
-        out.close();
+        response.getWriter().write(str);
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 }
