@@ -2,8 +2,11 @@ package com.qst.crop.service.impl;
 
 import com.qst.crop.dao.PurchaseDao;
 import com.qst.crop.entity.Purchase;
+import com.qst.crop.model.MyPurchase;
 import com.qst.crop.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +23,13 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public Purchase selectNewPurchaseId(String ownName) {
-        Purchase purchase = purchaseDao.selectNewPurchaseId(ownName);
-        return purchase;
+        return purchaseDao.selectNewPurchaseId(ownName);
+    }
+
+    @Override
+    public List<MyPurchase> selectBuys() {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+        return purchaseDao.selectByPurchase(name);
     }
 }

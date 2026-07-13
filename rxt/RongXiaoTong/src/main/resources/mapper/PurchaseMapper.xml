@@ -81,4 +81,23 @@
         order by create_time desc
         limit 1
     </select>
+
+    <select id="selectByPurchase" parameterType="java.lang.String" resultType="com.qst.crop.model.MyPurchase">
+        SELECT DISTINCT
+            tb1.purchase_id as purchaseId,
+            tu.real_name as ownName,
+            tb1.purchase_type as purchaseType,
+            tb1.total_price as totalPrice,
+            tu.address as address,
+            tb1.purchase_status as purchaseStatus,
+            tb1.create_time as createTime,
+            tb1.update_time as updateTime,
+            MAX(tb3.picture) as picture
+        FROM tb_purchase AS tb1
+        LEFT JOIN tb_purchase_detail AS tb2 ON tb1.purchase_id = tb2.purchase_id
+        LEFT JOIN tb_order AS tb3 ON tb2.order_id = tb3.order_id
+        LEFT JOIN tb_user AS tu ON tb1.own_name = tu.user_name
+        WHERE tb1.own_name = #{name}
+        GROUP BY tb1.purchase_id, tb1.own_name, tb1.purchase_type, tb1.total_price, tu.address, tb1.purchase_status, tb1.create_time, tb1.update_time
+    </select>
 </mapper>
