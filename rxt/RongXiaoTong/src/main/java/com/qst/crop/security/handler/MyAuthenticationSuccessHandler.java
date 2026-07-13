@@ -5,7 +5,6 @@ import com.qst.crop.common.Result;
 import com.qst.crop.common.StatusCode;
 import com.qst.crop.security.util.JwtTokenUtil;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,25 +26,29 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtTokenUtil.generateToken(userDetails);
-//        将token放入请求头中
+        System.out.println("生成的token: " + token);
         renderToken(httpServletResponse, token);
         System.out.println("登陆成功");
     }
 
-    /**
-     * 渲染返回 token 页面,因为前端页面接收的都是Result对象，故使用application/json返回
-     *
-     * @param response
-     * @throws IOException
-     */
     public void renderToken(HttpServletResponse response, String token) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-
-        String str = JSON.toJSONString(new Result<String>(true, StatusCode.OK, "登陆成功", token));
-        response.getWriter().write(str);
-        response.getWriter().flush();
-        response.getWriter().close();
+        
+        Result<String> result = new Result<>(true, StatusCode.OK, "登陆成功", token);
+        String str = JSON.toJSONString(result);
+        System.out.println("要返回的响应: " + str);
+        
+        try {
+            response.getWriter().write(str);
+            response.getWriter().flush();
+            System.out.println("响应写入成功");
+        } catch (Exception e) {
+            System.out.println("写入响应失败，尝试使用OutputStream: " + e.getMessage());
+            response.getOutputStream().write(str.getBytes("UTF-8"));
+            response.getOutputStream().flush();
+            System.out.println("使用OutputStream写入成功");
+        }
     }
 }
