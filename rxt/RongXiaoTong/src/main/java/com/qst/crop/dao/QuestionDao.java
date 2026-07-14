@@ -15,10 +15,4 @@ public interface QuestionDao {
 
     List<Question> selectAllByKeys(@Param("keys") String keys);
 
-    int updateByPrimaryKeySelective(Question record);
-
-    List<Question> selectByQuestion(Question record);
-
-    int deleteByPrimaryKey(Integer id);
-
 }

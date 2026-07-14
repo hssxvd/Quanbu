@@ -5,7 +5,9 @@ import com.qst.crop.common.StatusCode;
 import com.qst.crop.entity.Expert;
 import com.qst.crop.entity.ExpertUser;
 import com.qst.crop.entity.Question;
+import com.qst.crop.entity.Question;
 import com.qst.crop.service.ExpertService;
+import com.qst.crop.service.QuestionService;
 import com.qst.crop.service.QuestionService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/question")
 @Tag(name = "问题模块接口")
@@ -27,6 +31,9 @@ public class QuestionController {
 
     @Autowired
     private ExpertService expertService;
+
+    @Autowired
+    private QuestionService questionService;
 
     @Autowired
     private QuestionService questionService;
