@@ -48,4 +48,9 @@ public class OrderServiceImpl implements OrderService {
     public Order selectById(Integer orderId) {
         return orderDao.selectById(orderId);
     }
+
+    @Override
+    public List<Order> searchMyNeedsByKeys(String ownName, String keys, Integer pageNum, Integer pageSize) {
+        return orderDao.searchMyNeedsByKeys(ownName, keys, pageNum, pageSize);
+    }
 }

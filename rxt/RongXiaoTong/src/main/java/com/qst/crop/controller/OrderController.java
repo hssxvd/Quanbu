@@ -122,4 +122,21 @@ public class OrderController {
         return new Result<>(true, 20000, "查询成功", orders);
     }
 
+    @GetMapping("/searchMyNeedsByKeys/{keys}/{pageNum}")
+    public Result<List<Order>> searchMyNeedsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String ownName = principal.getUsername();
+        int pageSize = 10;
+        List<Order> orders = orderService.searchMyNeedsByKeys(ownName, keys, pageNum, pageSize);
+        return new Result<>(true, 20000, "查询成功", orders);
+    }
+
+    @GetMapping("/selectSells")
+    public Result<List<Order>> selectSells() {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String ownName = principal.getUsername();
+        List<Order> orders = orderService.selectByOwnNameAndType(ownName, "goods");
+        return new Result<>(true, 20000, "查询成功", orders);
+    }
+
 }
