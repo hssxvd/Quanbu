@@ -41,4 +41,19 @@ public class ExpertServiceImpl implements ExpertService {
         PageInfo<ExpertUser> expertUserPageInfo = new PageInfo<>(expertUser);
         return expertUserPageInfo;
     }
+
+    @Override
+    public Expert selectByUserName(String userName) {
+        return expertDao.selectByUserName(userName);
+    }
+
+    @Override
+    public int updateExpert(Expert expert) {
+        return expertDao.updateByPrimaryKeySelective(expert);
+    }
+
+    @Override
+    public void delete(String userName) {
+        expertDao.deleteByPrimaryKey(userName);
+    }
 }
