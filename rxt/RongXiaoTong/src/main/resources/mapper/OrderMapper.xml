@@ -232,4 +232,17 @@
         </if>
         order by create_time desc
     </select>
+
+    <select id="searchMyNeedsByKeys" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_order
+        where own_name = #{ownName,jdbcType=VARCHAR}
+        and type = 'needs'
+        <if test="keys != null and keys != ''">
+            and title like concat('%', #{keys,jdbcType=VARCHAR}, '%')
+        </if>
+        order by create_time desc
+        limit #{pageSize} offset #{pageNum}
+    </select>
 </mapper>

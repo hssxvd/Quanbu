@@ -19,4 +19,6 @@ public interface OrderService {
     void deleteOrder(Integer orderId);
 
     Order selectById(Integer orderId);
+
+    List<Order> searchMyNeedsByKeys(String ownName, String keys, Integer pageNum, Integer pageSize);
 }

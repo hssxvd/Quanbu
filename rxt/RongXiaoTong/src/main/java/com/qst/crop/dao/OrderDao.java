@@ -24,4 +24,6 @@ public interface OrderDao {
     List<Order> selectByOwnNameAndType(@Param("ownName") String ownName, @Param("type") String type);
 
     List<Order> searchByCondition(@Param("ownName") String ownName, @Param("title") String title, @Param("type") String type);
+
+    List<Order> searchMyNeedsByKeys(@Param("ownName") String ownName, @Param("keys") String keys, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
 }
