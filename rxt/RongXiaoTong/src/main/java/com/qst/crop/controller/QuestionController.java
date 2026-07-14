@@ -4,12 +4,18 @@ import com.qst.crop.common.Result;
 import com.qst.crop.common.StatusCode;
 import com.qst.crop.entity.Expert;
 import com.qst.crop.entity.ExpertUser;
+import com.qst.crop.entity.Question;
 import com.qst.crop.service.ExpertService;
+import com.qst.crop.service.QuestionService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/question")
@@ -19,6 +25,9 @@ public class QuestionController {
 
     @Autowired
     private ExpertService expertService;
+
+    @Autowired
+    private QuestionService questionService;
 
     @Operation(summary = "分页查询所有专家")
     @GetMapping("/findExpert/{pageNum}")
@@ -39,6 +48,44 @@ public class QuestionController {
     public Result<PageInfo<ExpertUser>> findExpertUser(@PathVariable Integer pageNum) {
         PageInfo<ExpertUser> ExpertUserPageInfo = expertService.findPageExpertUser(pageNum);
         return new Result<PageInfo<ExpertUser>>(true, StatusCode.OK, "查询成功", ExpertUserPageInfo);
+    }
+
+    @Operation(summary = "根据ID查询询问情况")
+    @GetMapping("/selectId/{id}")
+    public Result selectById(@PathVariable("id") Integer id) {
+        Question question = questionService.selectById(id);
+        return new Result(true, StatusCode.OK, "查询成功", question);
+    }
+
+    @Operation(summary = "添加询问情报")
+    @PostMapping("/add")
+    public Result add(@RequestBody Question question, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringBuffer stringBuffer = new StringBuffer();
+            List<ObjectError> allErrors = bindingResult.getAllErrors();
+            for (ObjectError objectError : allErrors) {
+                stringBuffer.append(objectError.getDefaultMessage()).append("; ");
+            }
+            String s = stringBuffer.toString();
+            System.out.println(s);
+            return new Result<String>(false, StatusCode.ERROR, "添加失败", s);
+        }
+        questionService.insert(question);
+        return new Result(true, StatusCode.OK, "添加成功");
+    }
+
+    @Operation(summary = "分页条件查询所有问答情况")
+    @GetMapping("/findPageQues/{keys}/{pageNum}")
+    public Result<PageInfo<Question>> findPageQues(@PathVariable("keys") String keys, @PathVariable Integer pageNum) {
+        PageInfo<Question> questionPageInfo = questionService.selectByKeys(keys, pageNum);
+        return new Result(true, StatusCode.OK, "查询成功", questionPageInfo);
+    }
+
+    @Operation(summary = "分页查询所有问答情况")
+    @GetMapping("/findAllQues/{pageNum}")
+    public Result<PageInfo<Question>> findAllQues(@PathVariable Integer pageNum) {
+        PageInfo<Question> questionPageInfo = questionService.selectByKeys(null, pageNum);
+        return new Result(true, StatusCode.OK, "查询成功", questionPageInfo);
     }
 
 }
