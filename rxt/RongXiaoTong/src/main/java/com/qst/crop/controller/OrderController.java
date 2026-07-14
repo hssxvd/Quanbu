@@ -139,4 +139,16 @@ public class OrderController {
         return new Result<>(true, 20000, "查询成功", orders);
     }
 
+    @PutMapping("/takeDownOrder/{orderId}")
+    public Result<Void> takeDownOrder(@PathVariable String orderId) {
+        orderService.takeDown(orderId);
+        return new Result<>(true, 20000, "下架成功");
+    }
+
+    @PutMapping("/takeUpOrder/{orderId}")
+    public Result<Void> takeUpOrder(@PathVariable String orderId) {
+        orderService.takeUp(orderId);
+        return new Result<>(true, 20000, "上架成功");
+    }
+
 }

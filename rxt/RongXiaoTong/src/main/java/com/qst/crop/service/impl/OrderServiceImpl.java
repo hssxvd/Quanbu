@@ -53,4 +53,14 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> searchMyNeedsByKeys(String ownName, String keys, Integer pageNum, Integer pageSize) {
         return orderDao.searchMyNeedsByKeys(ownName, keys, pageNum, pageSize);
     }
+
+    @Override
+    public void takeDown(String orderId) {
+        orderDao.takeDown(orderId);
+    }
+
+    @Override
+    public void takeUp(String orderId) {
+        orderDao.takeUp(orderId);
+    }
 }
