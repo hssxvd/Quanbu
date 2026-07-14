@@ -15,4 +15,12 @@ public interface KnowledgeDao {
 
     List<Knowledge> selectAllByKeys(@Param("keys") String keys);
 
+    int insertSelective(Knowledge knowledge);
+
+    int updateByPrimaryKeySelective(Knowledge knowledge);
+
+    int deleteByPrimaryKey(Integer id);
+
+    List<Knowledge> selectByExample(@Param("name") String name);
+
 }

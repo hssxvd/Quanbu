@@ -8,7 +8,12 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "知识模块接口")
 @RestController
@@ -37,5 +42,37 @@ public class KnowledgeController {
     public Result<PageInfo<Knowledge>> findPageByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
         PageInfo<Knowledge> knowledgePageInfo = knowledgeService.findPageByKeys(keys, pageNum);
         return new Result<PageInfo<Knowledge>>(true, StatusCode.OK, "查询成功", knowledgePageInfo);
+    }
+
+    @Operation(summary = "添加知识")
+    @PostMapping()
+    @PreAuthorize("hasRole('expert')")
+    public Result add(@RequestBody Knowledge knowledge) {
+        knowledgeService.add(knowledge);
+        return new Result(true, StatusCode.OK, "添加成功");
+    }
+
+    @Operation(summary = "根据id修改知识")
+    @PutMapping("/{id}")
+    public Result update(@RequestBody Knowledge knowledge,
+                         @PathVariable("id") Integer id) {
+        knowledgeService.update(knowledge, id);
+        return new Result(true, StatusCode.OK, "修改成功");
+    }
+
+    @Operation(summary = "根据id删除知识")
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable("id") Integer id) {
+        knowledgeService.delete(id);
+        return new Result(true, StatusCode.OK, "删除成功");
+    }
+
+    @Operation(summary = "根据登录用户查询知识")
+    @GetMapping("/selectByUsername")
+    public Result selectByUsername() {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+        List<Knowledge> knowledges = knowledgeService.selectByUsername(name);
+        return new Result(true, StatusCode.OK, "查询成功", knowledges);
     }
 }
