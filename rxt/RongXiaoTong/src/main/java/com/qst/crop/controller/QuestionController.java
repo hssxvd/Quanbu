@@ -11,6 +11,8 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -86,6 +88,37 @@ public class QuestionController {
     public Result<PageInfo<Question>> findAllQues(@PathVariable Integer pageNum) {
         PageInfo<Question> questionPageInfo = questionService.selectByKeys(null, pageNum);
         return new Result(true, StatusCode.OK, "查询成功", questionPageInfo);
+    }
+
+    @Operation(summary = "查询个人问答")
+    @GetMapping("/selectByUser")
+    public Result selectByUser() {
+        List<Question> questions = questionService.selectByQuestion("questioner");
+        return new Result(true, StatusCode.OK, "查询成功", questions);
+    }
+
+    @Operation(summary = "根据id修改询问情报")
+    @PutMapping("/update")
+    public Result update(@RequestBody Question question, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringBuffer stringBuffer = new StringBuffer();
+            List<ObjectError> allErrors = bindingResult.getAllErrors();
+            for (ObjectError objectError : allErrors) {
+                stringBuffer.append(objectError.getDefaultMessage()).append("; ");
+            }
+            String s = stringBuffer.toString();
+            System.out.println(s);
+            return new Result<String>(false, StatusCode.ERROR, "修改失败", s);
+        }
+        questionService.updateById(question);
+        return new Result(true, StatusCode.OK, "修改成功");
+    }
+
+    @Operation(summary = "根据id删除询问情报")
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable("id") Integer id) {
+        questionService.delete(id);
+        return new Result(true, StatusCode.OK, "删除成功");
     }
 
 }
