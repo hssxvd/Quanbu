@@ -44,4 +44,28 @@
       and tb1.role = 'expert'
     </where>
   </select>
+
+  <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_expert
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.qst.crop.entity.Expert">
+    update tb_expert
+    <set>
+      <if test="realName != null">real_name = #{realName,jdbcType=VARCHAR},</if>
+      <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
+      <if test="profession != null">profession = #{profession,jdbcType=VARCHAR},</if>
+      <if test="position != null">position = #{position,jdbcType=VARCHAR},</if>
+      <if test="belong != null">belong = #{belong,jdbcType=VARCHAR},</if>
+    </set>
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_expert
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </delete>
 </mapper>

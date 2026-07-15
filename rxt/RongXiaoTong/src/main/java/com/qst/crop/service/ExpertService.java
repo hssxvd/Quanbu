@@ -12,4 +12,10 @@ public interface ExpertService {
 
     PageInfo<ExpertUser> findPageExpertUser(Integer pageNum);
 
+    Expert selectByUserName(String userName);
+
+    int updateExpert(Expert expert);
+
+    void delete(String userName);
+
 }
