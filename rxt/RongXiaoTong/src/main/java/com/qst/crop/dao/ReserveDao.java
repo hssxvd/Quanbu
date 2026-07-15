@@ -14,4 +14,6 @@ public interface ReserveDao {
     int updateByPrimaryKeySelective(Reserve record);
 
     List<Reserve> selectByReserve(Reserve record);
+public interface ReserveDao {
+    int insertSelective(Reserve record);
 }

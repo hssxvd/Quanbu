@@ -16,4 +16,10 @@ public interface ExpertDao {
 
     List<ExpertUser> selectAllUserExpert();
 
+    Expert selectByUserName(@Param("userName") String userName);
+
+    int updateByPrimaryKeySelective(Expert expert);
+
+    int deleteByPrimaryKey(@Param("userName") String userName);
+
 }

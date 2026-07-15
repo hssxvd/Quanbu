@@ -14,4 +14,6 @@ public interface ReserveService {
     void updateById(Reserve record);
 
     List<Reserve> selectByReserve(String type);
+public interface ReserveService {
+    void insert(Reserve record);
 }

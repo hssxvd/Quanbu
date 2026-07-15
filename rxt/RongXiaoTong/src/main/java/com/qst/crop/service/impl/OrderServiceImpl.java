@@ -63,4 +63,12 @@ public class OrderServiceImpl implements OrderService {
     public void takeUp(String orderId) {
         orderDao.takeUp(orderId);
     }
+
+    @Override
+    public boolean hasOrdersByOwnName(String ownName) {
+        Order order = new Order();
+        order.setOwnName(ownName);
+        List<Order> orders = orderDao.selectByExample(order);
+        return orders != null && !orders.isEmpty();
+    }
 }

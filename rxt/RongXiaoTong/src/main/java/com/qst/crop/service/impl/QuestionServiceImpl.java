@@ -40,4 +40,28 @@ public class QuestionServiceImpl implements QuestionService {
         PageInfo<Question> questionPageInfo = new PageInfo<>(questions);
         return questionPageInfo;
     }
+
+    @Override
+    public void updateById(Question question) {
+        questionDao.updateByPrimaryKeySelective(question);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        questionDao.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public List<Question> selectByQuestion(String type) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+        Question question = new Question();
+        if ("questioner".equals(type)) {
+            question.setQuestioner(name);
+        } else {
+            question.setExpertName(name);
+        }
+        List<Question> questions = questionDao.selectByQuestion(question);
+        return questions;
+    }
 }
