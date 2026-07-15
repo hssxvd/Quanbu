@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qst.crop.dao.ExpertDao">
+  <resultMap id="BaseResultMap" type="com.qst.crop.entity.Expert">
+    <id column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="profession" jdbcType="VARCHAR" property="profession" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="belong" jdbcType="VARCHAR" property="belong" />
+  </resultMap>
+  <resultMap id="ExpertUserResultMap" type="com.qst.crop.entity.ExpertUser">
+    <id column="user_name" jdbcType="VARCHAR" property="userName" />
+    <id column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="profession" jdbcType="VARCHAR" property="profession" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="belong" jdbcType="VARCHAR" property="belong" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_name, real_name, phone, profession, position, belong
+  </sql>
+
+  <select id="selectAllExpert" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_expert
+  </select>
+
+  <select id="selectAllByKeys" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_expert
+    where
+    real_name like CONCAT('%',#{keys,jdbcType=VARCHAR},'%') OR user_name like CONCAT('%',#{keys,jdbcType=VARCHAR},'%')
+  </select>
+
+  <select id="selectAllUserExpert" parameterType="java.lang.String" resultMap="ExpertUserResultMap">
+    select tb1.user_name,tb1.avatar, tb2.real_name, tb2.phone, tb2.profession,tb2.position,tb2.belong
+    from  tb_user as tb1,tb_expert as tb2
+    <where>
+      tb1.user_name=tb2.user_name
+      and tb1.role = 'expert'
+    </where>
+  </select>
+
+  <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_expert
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.qst.crop.entity.Expert">
+    update tb_expert
+    <set>
+      <if test="realName != null">real_name = #{realName,jdbcType=VARCHAR},</if>
+      <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
+      <if test="profession != null">profession = #{profession,jdbcType=VARCHAR},</if>
+      <if test="position != null">position = #{position,jdbcType=VARCHAR},</if>
+      <if test="belong != null">belong = #{belong,jdbcType=VARCHAR},</if>
+    </set>
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_expert
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </delete>
+</mapper>

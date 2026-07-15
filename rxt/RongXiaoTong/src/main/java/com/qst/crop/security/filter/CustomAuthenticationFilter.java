@@ -2,6 +2,8 @@ package com.qst.crop.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qst.crop.security.entity.AuthenticationBean;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -34,6 +36,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             return this.getAuthenticationManager().authenticate(authRequest);
         }
         return super.attemptAuthentication(request, response);
+    }
+
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
+        response.flushBuffer();
     }
 
     private boolean isJsonRequest(HttpServletRequest request) {

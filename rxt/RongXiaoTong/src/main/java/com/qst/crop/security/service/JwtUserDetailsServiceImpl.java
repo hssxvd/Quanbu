@@ -22,8 +22,12 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(String.format("%s.这个用户不存在", username));
         }
 
-        String role = "ROLE_" + user.getRole();
+        String role = user.getRole();
+        if (role == null || role.isEmpty()) {
+            role = "user";
+        }
+        String authority = "ROLE_" + role;
         return new JwtUser(user.getUserName(), user.getNickName(), user.getPassword(), user.getAvatar(),
-                AuthorityUtils.commaSeparatedStringToAuthorityList(role));
+                AuthorityUtils.commaSeparatedStringToAuthorityList(authority));
     }
 }
