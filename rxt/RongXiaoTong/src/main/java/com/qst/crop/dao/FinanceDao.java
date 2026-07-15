@@ -1,5 +1,6 @@
 package com.qst.crop.dao;
 
+import com.qst.crop.entity.Finance;
 import com.qst.crop.entity.Intention;
 import com.qst.crop.entity.Recommend;
 
@@ -19,4 +20,8 @@ public interface FinanceDao {
     List<Recommend> selectAllRecommend(String name);
 
     List<Recommend> selectWithNoneIntention(String name);
+
+    int insertSelective(Finance record);
+
+    void insertMulti(Finance finance);
 }

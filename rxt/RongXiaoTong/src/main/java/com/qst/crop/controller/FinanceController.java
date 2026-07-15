@@ -2,8 +2,11 @@ package com.qst.crop.controller;
 
 import com.qst.crop.common.Result;
 import com.qst.crop.common.StatusCode;
+import com.qst.crop.entity.Bank;
+import com.qst.crop.entity.Finance;
 import com.qst.crop.entity.Intention;
 import com.qst.crop.entity.Recommend;
+import com.qst.crop.service.BankService;
 import com.qst.crop.service.FinanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +24,8 @@ import java.util.List;
 public class FinanceController {
     @Autowired
     private FinanceService financeService;
+    @Autowired
+    private BankService bankService;
 
     @Operation(summary = "查询融资意向")
     @GetMapping("/selectIntentionByName")
@@ -67,5 +72,32 @@ public class FinanceController {
         String name = principal.getUsername();
         financeService.deleteIntentionByName(name);
         return new Result(true, StatusCode.OK, "删除成功");
+    }
+
+    @Operation(summary = "添加单人贷款")
+    @PostMapping("/add")
+    public Result add(@RequestBody Finance finance) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+        finance.setOwnName(name);
+        financeService.add(finance);
+        return new Result(true, StatusCode.OK, "申请成功");
+    }
+
+    @Operation(summary = "添加组合贷款")
+    @PostMapping("/addFinanceMulti")
+    public Result addFinanceMulti(@RequestBody Finance finance) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+        finance.setOwnName(name);
+        financeService.addMulti(finance);
+        return new Result(true, StatusCode.OK, "申请成功");
+    }
+
+    @Operation(summary = "查询银行情报")
+    @GetMapping("/selectbank")
+    public Result selectbank() {
+        List<Bank> banks = bankService.selectAllBank();
+        return new Result(true, StatusCode.OK, "查询成功", banks);
     }
 }

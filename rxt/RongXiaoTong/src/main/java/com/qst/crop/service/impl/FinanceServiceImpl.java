@@ -1,6 +1,7 @@
 package com.qst.crop.service.impl;
 
 import com.qst.crop.dao.FinanceDao;
+import com.qst.crop.entity.Finance;
 import com.qst.crop.entity.Intention;
 import com.qst.crop.entity.Recommend;
 import com.qst.crop.service.FinanceService;
@@ -53,5 +54,21 @@ public class FinanceServiceImpl implements FinanceService {
             System.out.println(list);
             return list;
         }
+    }
+
+    @Override
+    public void add(Finance finance) {
+        finance.setStatus(0);
+        finance.setCreateTime(new Date());
+        finance.setUpdateTime(new Date());
+        financeDao.insertSelective(finance);
+    }
+
+    @Override
+    public void addMulti(Finance finance) {
+        finance.setCreateTime(new Date());
+        finance.setUpdateTime(new Date());
+        finance.setStatus(0);
+        financeDao.insertMulti(finance);
     }
 }

@@ -114,4 +114,84 @@
         order by num asc
           limit 0,10
     </select>
+
+    <resultMap id="BaseResultMap" type="com.qst.crop.entity.Finance">
+        <result column="bank_id" jdbcType="INTEGER" property="bankId" />
+        <result column="own_name" jdbcType="VARCHAR" property="ownName" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="money" jdbcType="DECIMAL" property="money" />
+        <result column="rate" jdbcType="DECIMAL" property="rate" />
+        <result column="repayment" jdbcType="INTEGER" property="repayment" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        finance_id, bank_id, own_name,real_name, status, remark, money, rate, repayment, create_time,
+        update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_finance
+        where finance_id = #{financeId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAvatarByName" resultType="java.lang.String">
+        SELECT avatar FROM tb_user WHERE user_name = #{userName}
+    </select>
+
+    <select id="selectItems" resultType="java.lang.String">
+        SELECT description FROM tb_items WHERE user_name = #{userName}
+    </select>
+
+    <select id="selectAllProductByName" resultType="java.lang.String">
+        SELECT title FROM tb_order WHERE own_name = #{name}
+    </select>
+
+    <select id="selectMoneyByBankId" resultType="java.math.BigDecimal">
+        SELECT money FROM tb_bank WHERE bank_id = #{bankId}
+    </select>
+
+    <select id="selectBankById" resultType="com.qst.crop.entity.Bank">
+        SELECT * FROM tb_bank WHERE bank_id = #{bankId}
+    </select>
+
+    <select id="selectIfApply" resultType="com.qst.crop.entity.Finance">
+        select * from tb_finance where own_name = #{name}
+    </select>
+
+    <select id="selectPhoneAddressByName" resultType="java.lang.String">
+        select phone,address from tb_user where user_name = #{name}
+    </select>
+
+    <select id="selectNameByAuth" resultType="java.lang.String">
+        select authorization from tb_user where user_name = #{name}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.qst.crop.entity.Finance">
+        insert into tb_finance
+            (bank_id,own_name,real_name,status,money,rate,repayment,create_time,update_time)
+        values (#{bankId},#{ownName},#{realName},#{status},
+            #{money},#{rate},
+            #{repayment},
+            #{createTime},
+            #{updateTime})
+    </insert>
+
+    <insert id="insertMulti" parameterType="com.qst.crop.entity.Finance">
+        insert into tb_finance
+            (bank_id,own_name,real_name,phone,id_num,status,money,rate,repayment,create_time,update_time,combination_name1,combination_phone1,
+             combination_idnum1,combination_name2,combination_phone2,combination_idnum2)
+        values (#{bankId},#{ownName},#{realName},#{phone},#{idNum},#{status},
+                #{money},#{rate},#{repayment},#{createTime},#{updateTime},
+                #{combinationName1},#{combinationPhone1},#{combinationIdnum1},#{combinationName2},#{combinationPhone2},
+                #{combinationIdnum2})
+    </insert>
+
+    <update id="AuthorizationtoUser">
+        UPDATE tb_user SET authorization = #{name} WHERE user_name = #{userName}
+    </update>
 </mapper>
