@@ -12,10 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,5 +48,48 @@ public class ReserveController {
         }
         reserveService.insert(reserve);
         return new Result(true, StatusCode.OK, "添加成功");
+    }
+    //根据ID查询预约情况
+    @Operation(summary = "根据ID查询预约情况")
+    @GetMapping("/selectId/{id}")
+    public Result selectById(@PathVariable("id") Integer id) {
+        Reserve reserve = reserveService.selectById(id);
+        return new Result(true, StatusCode.OK, "查询成功", reserve);
+    }
+
+    //根据id修改预约情报
+    @Operation(summary = "更新预约状态")
+    @PutMapping("/update")
+    public Result update(@RequestBody Reserve reserve, BindingResult bindingResult) {
+
+        //检查项目
+        if (bindingResult.hasErrors()) {
+            StringBuffer stringBuffer = new StringBuffer();
+            List<ObjectError> allErrors = bindingResult.getAllErrors();
+            for (ObjectError objectError : allErrors) {
+                stringBuffer.append(objectError.getDefaultMessage()).append("; ");
+            }
+            String s = stringBuffer.toString();
+            System.out.println(s);
+            return new Result<String>(false, StatusCode.ERROR, "修改失败",s);
+        }
+        reserveService.updateById(reserve);
+        return new Result(true, StatusCode.OK, "修改成功");
+    }
+
+    //根据id删除预约情报
+    @Operation(summary = "删除预约")
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable("id") Integer id) {
+        reserveService.delete(id);
+        return new Result(true, StatusCode.OK, "删除成功");
+    }
+
+    //根据用户查询预约情况
+    @Operation(summary = "根据用户查询预约情况")
+    @GetMapping("/selectByKind/{kind}")
+    public Result selectByKind(@PathVariable("kind") String kind) {
+        List<Reserve> reserves = reserveService.selectByReserve(kind);
+        return new Result(true, StatusCode.OK, "查询成功", reserves);
     }
 }
