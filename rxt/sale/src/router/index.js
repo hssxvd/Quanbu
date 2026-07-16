@@ -1,10 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import FrontPage from '../views/FrontPage.vue'
+import front from '../views/FrontPage.vue'
+import loginpage from '../views/LoginPage.vue'
+import registerpage from '../views/RegisterPage.vue'
+// import MyAddress from '../components/MyAddress.vue'
+
 
 const routes = [
   {
-    path: '/',
+     path: '/',
     redirect: '/home'
   },
   {
@@ -13,15 +17,22 @@ const routes = [
     children: [
       {
         path: '',
-        component: FrontPage,
+        component: front,
       },
     ]
   },
+  {
+     path: '/login',
+    component: loginpage,
+  },
+  {
+     path: '/register',
+    component: registerpage,
+  },
 ]
-
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
 
-export default router
+export default router 
