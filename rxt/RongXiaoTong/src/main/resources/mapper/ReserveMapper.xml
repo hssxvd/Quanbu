@@ -105,4 +105,69 @@
             </if>
         </trim>
     </insert>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_reserve
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByReserve" parameterType="com.qst.crop.entity.Reserve" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_reserve
+        <where>
+            <if test="expertName != null">
+                and expert_name = #{expertName,jdbcType=VARCHAR}
+            </if>
+            <if test="questioner != null">
+                and questioner = #{questioner,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from tb_reserve
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <update id="updateByPrimaryKeySelective" parameterType="com.qst.crop.entity.Reserve">
+        update tb_reserve
+        <set>
+            <if test="expertName != null">
+                expert_name = #{expertName,jdbcType=VARCHAR},
+            </if>
+            <if test="questioner != null">
+                questioner = #{questioner,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="plantName != null">
+                plant_name = #{plantName,jdbcType=VARCHAR},
+            </if>
+            <if test="soilCondition != null">
+                soil_condition = #{soilCondition,jdbcType=VARCHAR},
+            </if>
+            <if test="plantCondition != null">
+                plant_condition = #{plantCondition,jdbcType=VARCHAR},
+            </if>
+            <if test="plantDetail != null">
+                plant_detail = #{plantDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="message != null">
+                message = #{message,jdbcType=VARCHAR},
+            </if>
+            <if test="answer != null">
+                answer = #{answer,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

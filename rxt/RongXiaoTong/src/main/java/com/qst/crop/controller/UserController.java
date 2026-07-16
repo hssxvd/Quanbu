@@ -72,4 +72,24 @@ public class UserController {
         return new Result<>(true, StatusCode.OK, "查询成功", user);
     }
 
+    @Operation(summary = "用户注册")
+    @PostMapping("/register")
+    public Result<String> register(@Valid @RequestBody User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringJoiner stringJoiner = new StringJoiner(",");
+            bindingResult.getAllErrors().forEach(objectError -> stringJoiner.add(objectError.getDefaultMessage()));
+            String s = stringJoiner.toString();
+            return new Result<>(false, StatusCode.ERROR, "注册失败", s);
+        }
+        User existingUser = userService.selectByUserName(user.getUserName());
+        if (existingUser != null) {
+            return new Result<>(false, StatusCode.ERROR, "注册失败", "用户名已存在");
+        }
+        int result = userService.register(user);
+        if (result > 0) {
+            return new Result<>(true, StatusCode.OK, "注册成功", "注册成功");
+        }
+        return new Result<>(false, StatusCode.ERROR, "注册失败", "注册失败");
+    }
+
 }
