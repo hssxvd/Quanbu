@@ -40,23 +40,41 @@
             >
               农产品交易
             </a>
+            <router-link
+              to="/home/userinfo"
+              class="text-gray-800 hover:text-green-700 font-medium transition-colors"
+              :class="{ 'text-green-700 border-b-2 border-green-700 pb-1': activeNav === 'userinfo' }"
+            >
+              个人信息
+            </router-link>
           </nav>
           <div class="flex items-center space-x-4">
-            <a
-              href="/home/login"
-              class="text-gray-600 hover:text-green-700 font-medium transition-colors"
-              @click.prevent="navigate('login')"
-            >
-              登录
-            </a>
-            <span class="text-gray-300">|</span>
-            <a
-              href="/home/register"
-              class="text-gray-600 hover:text-green-700 font-medium transition-colors"
-              @click.prevent="navigate('register')"
-            >
-              注册
-            </a>
+            <template v-if="isLoggedIn">
+              <span class="text-gray-600">{{ loginUserNickname }}</span>
+              <span class="text-gray-300">|</span>
+              <a
+                href="#"
+                class="text-gray-600 hover:text-green-700 font-medium transition-colors"
+                @click.prevent="logout"
+              >
+                退出
+              </a>
+            </template>
+            <template v-else>
+              <router-link
+                to="/login"
+                class="text-gray-600 hover:text-green-700 font-medium transition-colors"
+              >
+                登录
+              </router-link>
+              <span class="text-gray-300">|</span>
+              <router-link
+                to="/register"
+                class="text-gray-600 hover:text-green-700 font-medium transition-colors"
+              >
+                注册
+              </router-link>
+            </template>
           </div>
         </div>
       </div>
@@ -94,11 +112,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 const router = useRouter();
+const store = useStore();
 const activeNav = ref("home");
+
+const isLoggedIn = computed(() => {
+  return store.state.token !== "";
+});
+
+const loginUserNickname = computed(() => {
+  return store.state.loginUserNickname;
+});
 
 const navigate = (page) => {
   activeNav.value = page;
@@ -115,20 +143,22 @@ const navigate = (page) => {
     case "agri":
       router.push("/home/agripro");
       break;
-    case "login":
-      router.push("/home/login");
-      break;
-    case "register":
-      router.push("/home/register");
-      break;
+    
   }
+};
+
+const logout = () => {
+  store.commit("updateLoginUserNickname", "");
+  store.commit("removeStorage");
+  router.push("/home").catch((err) => err);
 };
 
 onMounted(() => {
   const path = router.currentRoute.value.path;
-  if (path.includes("/home")) activeNav.value = "home";
+  if (path.includes("/home") && !path.includes("/userinfo")) activeNav.value = "home";
   else if (path.includes("/financing")) activeNav.value = "financing";
   else if (path.includes("/expert")) activeNav.value = "expert";
   else if (path.includes("/agri")) activeNav.value = "agri";
+  else if (path.includes("/userinfo")) activeNav.value = "userinfo";
 });
 </script>
