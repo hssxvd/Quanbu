@@ -8,16 +8,18 @@ const apiClient = axios.create({
   }
 })
 
-//请求拦截
-apiClient.interceptors.request.use(config => { //拦截请求
-    return config //若拦截到需要原封不动的返回
+apiClient.interceptors.request.use(config => {
+    const token = localStorage.getItem('token')
+    if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token
+    }
+    return config
 }, err => { })
-//响应拦截
+
 apiClient.interceptors.response.use(res => {
     return res.data
 }, err => {
     console.log(err);
 })
 
-// 导出 apiClient
 export { apiClient };
