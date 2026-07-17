@@ -804,11 +804,7 @@ const prevSlide = () => {
 // 银行查询接口
 const selectBank = async () => {
   try {
-    const response = await apiClient.get("/finance/selectbank", {
-      headers: {
-        Authorization: window.localStorage.token,
-      },
-    });
+    const response = await apiClient.get("/finance/selectbank");
     console.log("请求成功", response);
     return response;
   } catch (error) {
@@ -817,14 +813,9 @@ const selectBank = async () => {
   }
 };
 
-// 专家查询接口
 const selectExpert = async () => {
   try {
-    const response = await apiClient.get("/question/findExpertUser/1", {
-      headers: {
-        Authorization: window.localStorage.token,
-      },
-    });
+    const response = await apiClient.get("/question/findExpertUser/1");
     console.log("请求成功", response);
     return response?.list || [];
   } catch (error) {
@@ -833,14 +824,9 @@ const selectExpert = async () => {
   }
 };
 
-// 问答查询接口
 const selectQuesAns = async () => {
   try {
-    const response = await apiClient.get("/question/findAllQues/1", {
-      headers: {
-        Authorization: window.localStorage.token,
-      },
-    });
+    const response = await apiClient.get("/question/findAllQues/1");
     console.log("请求成功", response);
     return response?.list || [];
   } catch (error) {
@@ -849,14 +835,9 @@ const selectQuesAns = async () => {
   }
 };
 
-// 农业知识查询接口
 const selectKnowledge = async () => {
   try {
-    const response = await apiClient.get("/knowledge/1", {
-      headers: {
-        Authorization: window.localStorage.token,
-      },
-    });
+    const response = await apiClient.get("/knowledge/1");
     console.log("请求成功", response);
     return response?.list || [];
   } catch (error) {
@@ -865,14 +846,9 @@ const selectKnowledge = async () => {
   }
 };
 
-// 商品查询接口
 const selectGoods = async () => {
   try {
-    const response = await apiClient.get("/order/goods/1", {
-      headers: {
-        Authorization: window.localStorage.token,
-      },
-    });
+    const response = await apiClient.get("/order/goods/1");
     console.log("请求成功", response);
     return response?.list || [];
   } catch (error) {
@@ -882,18 +858,18 @@ const selectGoods = async () => {
 };
 //点击金融产品更多，跳转
 const finanProMore = () => {
-  router.push(`/financinglist`).catch((err) => err);
+  router.push(`/home/financinglist`).catch((err) => err);
 };
 //点击某金融产品，跳转
 const finanProDetail = (item)=> {
-  router.push(`/financing?bankId=${item.bankId}&bankicon=${item.icon}&bankname=${item.name}&bankintro=${item.introduce}&bankmoney=${item.money}&bankrate=${item.rate}&bankrepay=${item.repayment}`)
+  router.push(`/home/financing?bankId=${item.bankId}&bankname=${item.name}&bankintro=${item.introduce}&bankmoney=${item.money}&bankrate=${item.rate}&bankrepay=${item.repayment}`)
 };
 
 const aimatch = ()=> {
   if(!window.localStorage.token){
     ElMessage.error('您未登录，请先登录');
   } else {
-    router.push(`/aimatch`)
+    router.push(`/home/aimatch`)
   }
 };
 
