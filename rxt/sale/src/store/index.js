@@ -8,14 +8,14 @@ export default createStore({
     changedOrderId: 0,
     changedKnowledgeId: 0,
     user: '',
-    loginUserNickname: '',
-    loginUserAvatar: '',
+    loginUserNickname: localStorage.getItem('loginUserNickname') || '',
+    loginUserAvatar: localStorage.getItem('loginUserAvatar') || '',
     activeIndex: '1',
     publishActiveIndex: '1',
     userActiveIndex: '1-1',
     token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
     paymentInfo: '',
-    imgShowRoad: import.meta.env.VITE_APP_Address,  // 注意环境变量访问方式变化
+    imgShowRoad: import.meta.env.VITE_APP_Address,
     fileUploadRoad: import.meta.env.VITE_APP_Address,
     mutiFile: '',
   }),
@@ -49,11 +49,12 @@ export default createStore({
       state.changedKnowledgeId = value
     },
     updateLoginUserNickname(state, value) {
-      console.log('state.loginUserNickname', value, state.loginUserNickname)
       state.loginUserNickname = value
+      localStorage.setItem('loginUserNickname', value)
     },
     updateLoginUserAvatar(state, value) {
       state.loginUserAvatar = value
+      localStorage.setItem('loginUserAvatar', value)
     },
     updateRole(state, value) {
       state.role = value
@@ -78,8 +79,12 @@ export default createStore({
     removeStorage(state) {
       state.token = ''
       state.role = []
+      state.loginUserNickname = ''
+      state.loginUserAvatar = ''
       localStorage.removeItem('token')
       localStorage.removeItem('role')
+      localStorage.removeItem('loginUserNickname')
+      localStorage.removeItem('loginUserAvatar')
     }
   },
   actions: {
