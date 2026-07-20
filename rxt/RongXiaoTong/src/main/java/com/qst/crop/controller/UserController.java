@@ -3,6 +3,7 @@ package com.qst.crop.controller;
 import com.github.pagehelper.PageInfo;
 import com.qst.crop.common.Result;
 import com.qst.crop.common.StatusCode;
+import com.qst.crop.entity.Expert;
 import com.qst.crop.entity.User;
 import com.qst.crop.service.ExpertService;
 import com.qst.crop.service.OrderService;
@@ -11,9 +12,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.StringJoiner;
 
 @RestController
@@ -28,6 +33,9 @@ public class UserController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Operation(summary = "分页查询所有用户")
     @GetMapping("/search/{pageNum}")
@@ -90,6 +98,53 @@ public class UserController {
             return new Result<>(true, StatusCode.OK, "注册成功", "注册成功");
         }
         return new Result<>(false, StatusCode.ERROR, "注册失败", "注册失败");
+    }
+
+    @Operation(summary = "修改密码")
+    @PostMapping("/loginUpdatePassword")
+    public Result<String> updatePassword(@RequestBody Map<String, String> params) {
+        String oldPassword = params.get("oldPassword");
+        String newPassword = params.get("newPassword");
+
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = principal.getUsername();
+
+        User user = userService.selectByUserName(userName);
+        if (user == null) {
+            return new Result<>(false, StatusCode.ERROR, "用户不存在");
+        }
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            return new Result<>(false, StatusCode.ERROR, "旧密码不正确");
+        }
+
+        int result = userService.updatePassword(userName, newPassword);
+        if (result > 0) {
+            return new Result<>(true, StatusCode.OK, "密码修改成功");
+        }
+        return new Result<>(false, StatusCode.ERROR, "密码修改失败");
+    }
+
+    @Operation(summary = "查询专家信息")
+    @GetMapping("/searchexpert")
+    public Result<Expert> searchExpert() {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = principal.getUsername();
+        Expert expert = expertService.selectByUserName(userName);
+        return new Result<>(true, StatusCode.OK, "查询成功", expert);
+    }
+
+    @Operation(summary = "保存/更新专家信息")
+    @PostMapping("/addUpdexpert")
+    public Result<String> addUpdExpert(@RequestBody Expert expert) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = principal.getUsername();
+        expert.setUserName(userName);
+        int result = expertService.updateExpert(expert);
+        if (result > 0) {
+            return new Result<>(true, StatusCode.OK, "修改专家信息成功");
+        }
+        return new Result<>(false, StatusCode.ERROR, "修改专家信息失败");
     }
 
 }

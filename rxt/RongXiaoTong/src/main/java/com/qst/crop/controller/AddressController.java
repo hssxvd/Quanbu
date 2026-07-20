@@ -26,7 +26,7 @@ public class AddressController {
     @PostMapping("/add")
     public Result addAddress(@RequestBody Address address) {
         String userName = getCurrentUsername();
-        address.setUserName(userName);
+        address.setOwnName(userName);
         int result = addressService.addAddress(address);
         if (result > 0) {
             return new Result(true, StatusCode.OK, "添加成功");
@@ -53,7 +53,7 @@ public class AddressController {
     @PutMapping("/update")
     public Result updateAddress(@RequestBody Address address) {
         String userName = getCurrentUsername();
-        address.setUserName(userName);
+        address.setOwnName(userName);
         int result = addressService.updateAddress(address);
         if (result > 0) {
             return new Result(true, StatusCode.OK, "更新成功");

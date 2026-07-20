@@ -4,50 +4,40 @@ import java.util.Date;
 
 public class Address {
 
-    private Integer addressId;
+    private Integer id;
 
-    private String userName;
+    private String ownName;
 
-    private String realName;
+    private String consignee;
 
     private String phone;
 
-    private String province;
-
-    private String city;
-
-    private String district;
-
-    private String detail;
+    private String addressDetail;
 
     private Integer isDefault;
 
-    private Date createTime;
-
-    private Date updateTime;
-
-    public Integer getAddressId() {
-        return addressId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getOwnName() {
+        return ownName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
+    public void setOwnName(String ownName) {
+        this.ownName = ownName == null ? null : ownName.trim();
     }
 
-    public String getRealName() {
-        return realName;
+    public String getConsignee() {
+        return consignee;
     }
 
-    public void setRealName(String realName) {
-        this.realName = realName == null ? null : realName.trim();
+    public void setConsignee(String consignee) {
+        this.consignee = consignee == null ? null : consignee.trim();
     }
 
     public String getPhone() {
@@ -58,36 +48,12 @@ public class Address {
         this.phone = phone == null ? null : phone.trim();
     }
 
-    public String getProvince() {
-        return province;
+    public String getAddressDetail() {
+        return addressDetail;
     }
 
-    public void setProvince(String province) {
-        this.province = province == null ? null : province.trim();
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city == null ? null : city.trim();
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district == null ? null : district.trim();
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail == null ? null : detail.trim();
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail == null ? null : addressDetail.trim();
     }
 
     public Integer getIsDefault() {
@@ -96,21 +62,5 @@ public class Address {
 
     public void setIsDefault(Integer isDefault) {
         this.isDefault = isDefault;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
     }
 }
