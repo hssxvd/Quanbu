@@ -100,6 +100,28 @@ public class UserController {
         return new Result<>(false, StatusCode.ERROR, "注册失败", "注册失败");
     }
 
+    @Operation(summary = "查询当前登录用户信息")
+    @GetMapping("/loginSelectByUsername")
+    public Result<User> loginSelectByUsername() {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = principal.getUsername();
+        User user = userService.selectByUserName(userName);
+        return new Result<>(true, StatusCode.OK, "查询成功", user);
+    }
+
+    @Operation(summary = "更新当前登录用户信息")
+    @PostMapping("/loginUpdateByUsername")
+    public Result<String> loginUpdateByUsername(@RequestBody User user) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = principal.getUsername();
+        user.setUserName(userName);
+        int result = userService.updateUser(user);
+        if (result > 0) {
+            return new Result<>(true, StatusCode.OK, "修改成功", "修改成功");
+        }
+        return new Result<>(false, StatusCode.ERROR, "修改失败", "修改失败");
+    }
+
     @Operation(summary = "修改密码")
     @PostMapping("/loginUpdatePassword")
     public Result<String> updatePassword(@RequestBody Map<String, String> params) {

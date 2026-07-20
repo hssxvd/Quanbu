@@ -27,6 +27,8 @@ public interface OrderDao {
 
     List<Order> searchMyNeedsByKeys(@Param("ownName") String ownName, @Param("keys") String keys, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
 
+    List<Order> searchGoodsByKeys(@Param("keys") String keys, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+
 void takeDown(@Param("orderId") String orderId);
 
 void takeUp(@Param("orderId") String orderId);

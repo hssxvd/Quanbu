@@ -246,6 +246,15 @@
         limit #{pageSize} offset #{pageNum}
     </select>
 
+    <select id="searchGoodsByKeys" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_order
+        where title like concat('%', #{keys,jdbcType=VARCHAR}, '%')
+        order by create_time desc
+        limit #{pageSize} offset #{offset}
+    </select>
+
     <update id="takeDown">
         update tb_order
         set order_status = 1
