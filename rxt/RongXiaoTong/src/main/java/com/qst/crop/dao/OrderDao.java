@@ -19,7 +19,7 @@ public interface OrderDao {
 
     List<Order> selectByExample(Order order);
 
-    List<Order> selectByTypeAndPage(@Param("type") String type, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
+    List<Order> selectByTypeAndPage(@Param("type") String type, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
 
     List<Order> selectByOwnNameAndType(@Param("ownName") String ownName, @Param("type") String type);
 

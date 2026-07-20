@@ -67,7 +67,7 @@
         </div>
         
         <!-- 我的发布 -->
-        <div v-if="!$store.getters.isAdmin && !$store.getters.isExpert"
+        <div v-if="!$store.getters.isAdmin"
           @click="toggleMenu('myPosts')" 
           class="flex items-center justify-between text-gray-700 font-medium p-2 mt-4 cursor-pointer"
           :class="expandedMenus.myPosts ? 'text-[#007029]' : 'text-gray-700'"
@@ -95,7 +95,7 @@
         </div>
         
         <!-- 我的发布子菜单 -->
-        <div v-if="expandedMenus.myPosts && !$store.getters.isAdmin && !$store.getters.isExpert" class="ml-8 space-y-2 mt-2">
+        <div v-if="expandedMenus.myPosts && !$store.getters.isAdmin" class="ml-8 space-y-2 mt-2">
           <div 
             @click="ProductsClick();activeSection = 'products'" 
             class="flex items-center space-x-2 font-medium p-2 rounded-md cursor-pointer"
@@ -246,13 +246,17 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import router from '@/router/index';
+import { ref, reactive, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // 菜单展开状态
 const expandedMenus = reactive({
   myInfo: true,
-  myPosts: false
+  myPosts: false,
+  expert: false,
+  order: false
 });
 
 // 切换菜单展开状态
@@ -262,7 +266,60 @@ const toggleMenu = (menu) => {
 
 // 当前激活的部分
 const activeSection = ref('basic');
-router.push("/personal/mymsg").catch((err) => err);
+
+// 根据路由更新激活状态和菜单展开状态
+const updateActiveSection = () => {
+  const path = router.currentRoute.value.path;
+  if (path.includes('mymsg')) {
+    activeSection.value = 'basic';
+    expandedMenus.myInfo = true;
+  } else if (path.includes('myexpertmsg')) {
+    activeSection.value = 'expertinfo';
+    expandedMenus.myInfo = true;
+  } else if (path.includes('myadd')) {
+    activeSection.value = 'address';
+    expandedMenus.myInfo = true;
+  } else if (path.includes('mypwd')) {
+    activeSection.value = 'password';
+    expandedMenus.myInfo = true;
+  } else if (path.includes('products')) {
+    activeSection.value = 'products';
+    expandedMenus.myPosts = true;
+  } else if (path.includes('requests')) {
+    activeSection.value = 'requests';
+    expandedMenus.myPosts = true;
+  } else if (path.includes('myquestion')) {
+    activeSection.value = 'question';
+    expandedMenus.expert = true;
+  } else if (path.includes('myappointment')) {
+    activeSection.value = 'appointment';
+    expandedMenus.expert = true;
+  } else if (path.includes('myknowledge')) {
+    activeSection.value = 'knowledge';
+    expandedMenus.expert = true;
+  } else if (path.includes('mysellorder')) {
+    activeSection.value = 'sell';
+    expandedMenus.order = true;
+  } else if (path.includes('mybuyorder')) {
+    activeSection.value = 'buy';
+    expandedMenus.order = true;
+  } else if (path.includes('myfinancing')) {
+    activeSection.value = 'financing';
+  } else if (path.includes('myusermng')) {
+    activeSection.value = 'usermng';
+  } else if (path.includes('mygoodsmng')) {
+    activeSection.value = 'goodsmng';
+  }
+};
+
+// 监听路由变化
+watch(() => router.currentRoute.value.path, () => {
+  updateActiveSection();
+});
+
+onMounted(() => {
+  updateActiveSection();
+});
 
 const UserInfoClick = () => {
   router.push("/personal/mymsg").catch((err) => err);

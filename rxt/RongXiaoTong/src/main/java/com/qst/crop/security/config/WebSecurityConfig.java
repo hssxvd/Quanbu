@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                                 "/order/All/**",
                                 "/order/needs/**",
                                 "/order/selectById/**",
+                                "/order/search/**",
                                 "/order/searchGoodsByKeys/**",
                                 "/order/searchNeedsByKeys/**",
                                 "/order/searchAllByKeys/**",

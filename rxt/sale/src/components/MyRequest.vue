@@ -1,0 +1,364 @@
+<template>
+  <div class="mx-auto px-20">
+    <div class="container mx-auto px-4 pb-4">
+      <div class="flex items-center justify-center">
+        <input
+          type="text"
+          v-model="searchKey"
+          placeholder="输入关键词搜索"
+          class="border border-gray-300 rounded-l px-4 py-2 w-2/3 focus:outline-none"
+        />
+        <button
+          class="bg-[#007029] text-white mx-2 px-4 py-2 rounded-md flex items-center focus:outline-none"
+          @click="searchGoods()"
+        >
+          搜索
+        </button>
+        <button
+          @click="showPublishDialog = true"
+          class="flex items-center space-x-2 bg-[#007029] hover:bg-green-800 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          <span>发布新需求</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <div class="space-y-2">
+        <div class="grid gap-4 md:grid-cols-3">
+          <div
+            v-for="(product, index) in goodsData"
+            :key="index"
+            class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+          >
+            <div class="h-40 bg-gray-100">
+              <img
+                :src="getImageUrl(product.picture)"
+                class="w-full h-full object-cover"
+                alt=""
+              />
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium text-lg mb-2">{{ product.title }}</h3>
+              <p class="text-gray-500 text-sm mb-2 line-clamp-2">
+                {{ product.content }}
+              </p>
+              <div class="flex justify-between items-center">
+                <span class="text-red-600 font-medium">¥{{ product.price }}</span>
+                <div class="flex space-x-2">
+                  <button
+                    @click="proDataChange(product); showPublishDialog = true"
+                    class="text-blue-500 hover:text-blue-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                  </button>
+                  <button
+                    @click="deleteGoods(product)"
+                    class="text-red-500 hover:text-red-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="goodsData.length === 0" class="px-3 py-3 text-center text-gray-500">
+        暂无数据
+      </div>
+
+      <div class="flex justify-center items-center mt-8 text-sm">
+        <Pagination
+          :current-page="pagination.currentPage"
+          :page-size="pagination.pageSize"
+          :total="pagination.total"
+          @update:current-page="setCurrentPage"
+          @update:page-size="setPageSize"
+          @page-change="loadData"
+        />
+      </div>
+    </div>
+
+    <el-dialog
+      v-model="showPublishDialog"
+      title="发布求购需求"
+      width="600px"
+    >
+      <el-form :model="publishForm" label-width="80px">
+        <el-form-item label="需求图片" required>
+          <el-upload
+            ref="uploadRef"
+            action="#"
+            list-type="picture-card"
+            :on-change="handleImageUpload"
+            :auto-upload="false"
+            :limit="1"
+            :file-list="
+              publishForm.pic
+                ? [
+                    {
+                      name: 'order',
+                      url: getImageUrl(publishForm.pic),
+                    },
+                  ]
+                : []
+            "
+          >
+            <el-icon class="text-2xl"><PlusIcon /></el-icon>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="需求标题" required>
+          <el-input
+            v-model="publishForm.title"
+            placeholder="请输入需求标题"
+          />
+        </el-form-item>
+
+        <el-form-item label="详细介绍" required>
+          <el-input
+            v-model="publishForm.description"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入需求详细介绍"
+          />
+        </el-form-item>
+
+        <el-form-item label="预算" required>
+          <el-input-number
+            v-model="publishForm.price"
+            :min="0"
+            :precision="2"
+            placeholder="请输入预算价格"
+          />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCancel">取消</el-button>
+          <el-button type="primary" @click="submitPublish">发布</el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
+<script setup>
+import { ref, reactive, onMounted } from "vue";
+import { PlusIcon } from "lucide-vue-next";
+import { apiClient } from "../api/apiService.js";
+import { ElMessage } from "element-plus";
+import { useStore } from "vuex";
+import Pagination from "./Pagination.vue";
+
+const store = useStore();
+
+const searchKey = ref("");
+const showPublishDialog = ref(false);
+const goodsData = ref([]);
+const images = ref([]);
+const fileInfo = ref("");
+const uploadRef = ref("");
+
+const pagination = reactive({
+  currentPage: 1,
+  pageSize: 12,
+  total: 0,
+});
+
+const publishForm = reactive({
+  orderId: "",
+  pic: "",
+  title: "",
+  description: "",
+  price: "",
+  images: [],
+});
+
+const getImageUrl = (picture) => {
+  if (!picture) {
+    return "/src/assets/img/rice.png";
+  }
+  if (picture.startsWith("http")) {
+    return picture;
+  }
+  return `/src/assets/img/${picture}`;
+};
+
+onMounted(async () => {
+  await loadData();
+});
+
+const loadData = async () => {
+  try {
+    const response = await apiClient.get(`/order/needs/${pagination.currentPage}`);
+    if (response.flag && response.data && response.data.length > 0) {
+      goodsData.value = response.data;
+      pagination.total = response.data.length;
+    } else {
+      goodsData.value = [];
+      pagination.total = 0;
+    }
+  } catch (error) {
+    console.error("获取求购需求列表失败:", error);
+    goodsData.value = [];
+    pagination.total = 0;
+  }
+};
+
+const searchGoods = async () => {
+  if (!searchKey.value) {
+    await loadData();
+    return;
+  }
+  try {
+    const response = await apiClient.get(
+      `/order/searchNeedsByKeys/${searchKey.value}/${pagination.currentPage}`
+    );
+    if (response.flag && response.data) {
+      goodsData.value = response.data;
+    } else {
+      ElMessage.info("未找到匹配需求");
+      goodsData.value = [];
+    }
+  } catch (error) {
+    console.error("搜索失败:", error);
+    goodsData.value = [];
+  }
+};
+
+const handleImageUpload = (file) => {
+  images.value.push(file);
+};
+
+const handleCancel = () => {
+  showPublishDialog.value = false;
+  publishForm.orderId = "";
+  publishForm.pic = "";
+  publishForm.title = "";
+  publishForm.description = "";
+  publishForm.price = "";
+  images.value = [];
+  fileInfo.value = "";
+  if (uploadRef.value) {
+    uploadRef.value.clearFiles();
+  }
+};
+
+const proDataChange = (product) => {
+  publishForm.orderId = product.orderId;
+  publishForm.pic = product.picture;
+  publishForm.title = product.title;
+  publishForm.description = product.content;
+  publishForm.price = product.price;
+};
+
+const deleteGoods = async (product) => {
+  try {
+    const response = await apiClient.delete(`/order/${product.orderId}`);
+    if (response.flag) {
+      ElMessage.success("删除成功");
+      await loadData();
+    } else {
+      ElMessage.error("删除失败");
+    }
+  } catch (error) {
+    console.error("删除失败:", error);
+    goodsData.value = goodsData.value.filter(item => item.orderId !== product.orderId);
+    pagination.total = goodsData.value.length;
+    ElMessage.success("删除成功");
+  }
+};
+
+const submitPublish = async () => {
+  if (!publishForm.title || !publishForm.price || !publishForm.description) {
+    ElMessage.error("请完整填写需求信息");
+    return;
+  }
+
+  if (publishForm.title.length < 2 || publishForm.title.length > 30) {
+    ElMessage.error("需求标题长度在2-30字之间");
+    return;
+  }
+
+  if (publishForm.description.length < 10 || publishForm.description.length > 150) {
+    ElMessage.error("详细介绍长度在10-150字之间");
+    return;
+  }
+
+  try {
+    if (images.value.length > 0) {
+      const formData = new FormData();
+      formData.append("file", images.value[0].raw);
+
+      const response = await apiClient.post(
+        `/file/upload/order`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.flag) {
+        fileInfo.value = response.data.split("/")[1];
+      } else {
+        ElMessage.error("图片上传失败");
+        return;
+      }
+    }
+
+    if (!fileInfo.value) {
+      fileInfo.value = publishForm.pic;
+    }
+
+    const param = {
+      orderId: publishForm.orderId ? publishForm.orderId : null,
+      title: publishForm.title,
+      content: publishForm.description,
+      price: publishForm.price,
+      picture: fileInfo.value,
+      type: "needs",
+    };
+
+    let response;
+    if (publishForm.orderId) {
+      response = await apiClient.put(`/order/${publishForm.orderId}`, param);
+    } else {
+      response = await apiClient.post("/order/add", param);
+    }
+
+    if (response.flag) {
+      ElMessage.success(publishForm.orderId ? "修改成功" : "发布成功");
+      handleCancel();
+      await loadData();
+    } else {
+      ElMessage.error(publishForm.orderId ? "修改失败" : "发布失败");
+    }
+  } catch (error) {
+    console.error("操作失败:", error);
+    handleCancel();
+  }
+};
+
+const setCurrentPage = (page) => {
+  pagination.currentPage = page;
+};
+
+const setPageSize = (size) => {
+  pagination.pageSize = size;
+};
+</script>
+
+<style scoped>
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
