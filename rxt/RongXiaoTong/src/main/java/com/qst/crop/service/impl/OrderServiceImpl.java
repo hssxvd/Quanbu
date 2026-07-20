@@ -16,7 +16,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> searchByTypeAndPage(String type, Integer pageNum, Integer pageSize) {
-        return orderDao.selectByTypeAndPage(type, pageNum, pageSize);
+        int offset = (pageNum - 1) * pageSize;
+        return orderDao.selectByTypeAndPage(type, offset, pageSize);
     }
 
     @Override

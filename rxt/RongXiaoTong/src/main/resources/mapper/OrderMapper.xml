@@ -205,7 +205,7 @@
         from tb_order
         where type = #{type,jdbcType=VARCHAR}
         order by create_time desc
-        limit #{pageSize} offset #{pageNum}
+        limit #{pageSize} offset #{offset}
     </select>
 
     <select id="selectByOwnNameAndType" parameterType="java.util.Map" resultMap="BaseResultMap">

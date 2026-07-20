@@ -14,6 +14,8 @@ import MyExpertMsg from '../components/MyExpertMsg.vue'
 import MyKnowledge from '../components/MyKnowledge.vue'
 import MyQuestion from '../components/MyQuestion.vue'
 import MyAppointment from '../components/MyAppointment.vue'
+import MyGoods from '../components/MyGoods.vue'
+import MyRequest from '../components/MyRequest.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 import Question from '../views/QuestionDetails.vue'
@@ -101,6 +103,14 @@ const routes = [
       {
         path: 'myappointment',
         component: MyAppointment
+      },
+      {
+        path: 'products',
+        component: MyGoods
+      },
+      {
+        path: 'requests',
+        component: MyRequest
       }
     ]
   },
