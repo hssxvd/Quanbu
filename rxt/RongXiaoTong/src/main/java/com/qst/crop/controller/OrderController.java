@@ -1,6 +1,7 @@
 package com.qst.crop.controller;
 
 import com.qst.crop.common.Result;
+import com.qst.crop.dao.OrderDao;
 import com.qst.crop.entity.Order;
 import com.qst.crop.service.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,10 +21,21 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private OrderDao orderDao;
+
     @GetMapping("/search/{type}/{pageNum}")
     public Result<List<Order>> searchByTypeAndPage(@PathVariable String type, @PathVariable Integer pageNum) {
         int pageSize = 10;
         List<Order> orders = orderService.searchByTypeAndPage(type, pageNum, pageSize);
+        return new Result<>(true, 20000, "查询成功", orders);
+    }
+
+    @GetMapping("/search/searchGoodsByKeys/{keys}/{pageNum}")
+    public Result<List<Order>> searchGoodsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        int pageSize = 10;
+        int offset = (pageNum - 1) * pageSize;
+        List<Order> orders = orderDao.searchGoodsByKeys(keys, offset, pageSize);
         return new Result<>(true, 20000, "查询成功", orders);
     }
 
