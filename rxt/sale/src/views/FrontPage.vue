@@ -307,64 +307,46 @@
           Agricultural Knowledge
         </h5>
 
-        <!-- First Article -->
-        <div class="flex flex-col md:flex-row items-start mb-12">
-          <div
-            class="w-full md:w-1/5 mb-4 md:mb-0 flex justify-center items-center"
-          >
-            <img
-              :src="pic01"
-              alt="Tea leaves"
-              class="rounded-md w-64 h-74 object-cover"
-            />
-          </div>
-          <div class="w-full md:w-4/5 md:px-8 flex flex-col h-[250px]">
-            <div class="flex-grow">
-              <h3
-                class="text-lg font-bold mb-4 border-l-4 border-green-700 pl-3"
-              >
-                {{knowledgeTwo[0]?.title || '农业知识'}}
-              </h3>
-              <p class="text-l text-gray-600 leading-relaxed">
-                {{knowledgeTwo[0]?.content || '暂无内容'}}
-              </p>
+        <div v-if="knowledgeTwo.length > 0">
+          <div class="flex flex-col md:flex-row items-start mb-12">
+            <div class="w-full md:w-1/5 mb-4 md:mb-0 flex justify-center items-center">
+              <img :src="pic01" alt="knowledge" class="rounded-md w-64 h-74 object-cover" />
             </div>
-            <button
-              class="bg-green-700 text-white py-2 px-6 rounded-md text-sm hover:bg-green-800 transition-colors self-start" @click="articleDetail(knowledgeTwo[0])"
-            >
-              查看详情
-            </button>
+            <div class="w-full md:w-4/5 md:px-8 flex flex-col h-[250px]">
+              <div class="flex-grow">
+                <h3 class="text-lg font-bold mb-4 border-l-4 border-green-700 pl-3">
+                  {{ knowledgeTwo[0].title }}
+                </h3>
+                <p class="text-l text-gray-600 leading-relaxed">
+                  {{ knowledgeTwo[0].content }}
+                </p>
+              </div>
+              <button class="bg-green-700 text-white py-2 px-6 rounded-md text-sm hover:bg-green-800 transition-colors self-start" @click="articleDetail(knowledgeTwo[0])">
+                查看详情
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col md:flex-row-reverse items-start">
+            <div class="w-full md:w-1/5 mb-4 md:mb-0 flex justify-center items-center">
+              <img :src="pic02" alt="knowledge" class="rounded-md w-64 h-74 object-cover" />
+            </div>
+            <div class="w-full md:w-4/5 md:px-8 flex flex-col h-[250px]">
+              <div class="flex-grow">
+                <h3 class="text-lg font-bold mb-4 border-l-4 border-green-700 pl-3">
+                  {{ knowledgeTwo[1].title }}
+                </h3>
+                <p class="text-l text-gray-600 leading-relaxed mb-6">
+                  {{ knowledgeTwo[1].content }}
+                </p>
+              </div>
+              <button class="bg-green-700 text-white py-2 px-6 rounded-md text-sm hover:bg-green-800 transition-colors self-start" @click="articleDetail(knowledgeTwo[1])">
+                查看详情
+              </button>
+            </div>
           </div>
         </div>
-
-        <!-- Second Article -->
-        <div class="flex flex-col md:flex-row-reverse items-start">
-          <div
-            class="w-full md:w-1/5 mb-4 md:mb-0 flex justify-center items-center"
-          >
-            <img
-              :src="pic02"
-              alt="Tea leaves"
-              class="rounded-md w-64 h-74 object-cover"
-            />
-          </div>
-          <div class="w-full md:w-4/5 md:px-8 flex flex-col h-[250px]">
-            <div class="flex-grow">
-              <h3
-                class="text-lg font-bold mb-4 border-l-4 border-green-700 pl-3"
-              >
-                {{knowledgeTwo[1]?.title || '农业知识'}}
-              </h3>
-              <p class="text-l text-gray-600 leading-relaxed mb-6">
-                {{knowledgeTwo[1]?.content || '暂无内容'}}
-              </p>
-            </div>
-            <button
-              class="bg-green-700 text-white py-2 px-6 rounded-md text-sm hover:bg-green-800 transition-colors self-start" @click="articleDetail(knowledgeTwo[1])"
-            >
-              查看详情
-            </button>
-          </div>
+        <div v-else class="text-center py-8">
+          <p class="text-gray-500">暂无农业知识内容</p>
         </div>
         <div class="flex justify-center">
           <button
@@ -424,7 +406,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { UserIcon } from "lucide-vue-next";
 import { defineComponent } from "vue";
 import { apiClient } from "../api/apiService.js";
@@ -445,7 +427,7 @@ const openConsultDialog = (expert) => {
   //   ElMessage.error('您未登录，请先登录');
   //   return;
   // }
-  expertName.value=expert.userName;
+  expertName.value=expert.realName;
   consultDialog.value.open();
 };
 
@@ -455,7 +437,7 @@ const openReserveDialog = (expert) => {
   //   ElMessage.error('您未登录，请先登录');
   //   return;
   // }
-  expertName.value=expert.userName;
+  expertName.value=expert.realName;
   reserveDialog.value.open();
 };
 
@@ -490,14 +472,17 @@ const carouselImages = ref([
   { src: banner01, alt: "Agriculture banner" },
 ]);
 
-let bankFour = ref([]);
-let expertFive = ref([]);
-let quesAnsThree = ref([]);
-let knowledgeTwo = ref([]);
-const pic01 = ref();
-const pic02 = ref();
+const bankFour = ref([]);
+const expertFive = ref([]);
+const quesAnsThree = ref([]);
+const knowledgeTwo = ref([]);
+const pic01 = ref('');
+const pic02 = ref('');
+const displayKnowledge = computed(() => {
+  return knowledgeTwo.value.length > 0 ? knowledgeTwo.value : [];
+});
 
-let goodsFive = ref([]);
+const goodsFive = ref([]);
 
 // Auto-rotate carousel
 onMounted(async () => {
@@ -589,7 +574,7 @@ onMounted(async () => {
       },
       {
         bankId: '1003',
-        icon: bank03,
+        icon: bank01,
         name: '助农贷',
         money: '150000',
         introduce: '助农贷，在线申请，期限长还款方式灵活',
@@ -704,11 +689,17 @@ onMounted(async () => {
 //编辑展示的农业知识信息
   try {
     const knowledgedata = await selectKnowledge();
+    console.log('knowledgedata:', knowledgedata);
+    console.log('knowledgedata length:', knowledgedata?.length);
     if (knowledgedata && knowledgedata.length > 0) {
       const tempquesKnowledge = knowledgedata.slice(0, 2);
-      knowledgeTwo.value = tempquesKnowledge;
-      pic01.value = tempquesKnowledge[0]?.picPath;
-      pic02.value = tempquesKnowledge[1]?.picPath;
+      knowledgeTwo.value = [...tempquesKnowledge];
+      console.log('knowledgeTwo set with real data:', knowledgeTwo.value);
+      console.log('knowledgeTwo[0].knowledgeId:', knowledgeTwo.value[0]?.knowledgeId);
+      console.log('knowledgeTwo[0].id:', knowledgeTwo.value[0]?.id);
+      pic01.value = '/api/file/' + (tempquesKnowledge[0]?.picPath || '');
+      pic02.value = '/api/file/' + (tempquesKnowledge[1]?.picPath || '');
+      console.log('knowledgeTwo.length:', knowledgeTwo.value.length);
     } else {
       throw new Error('No data');
     }
@@ -806,7 +797,10 @@ const selectBank = async () => {
   try {
     const response = await apiClient.get("/finance/selectbank");
     console.log("请求成功", response);
-    return response;
+    if (response && response.flag === true) {
+      return response.data || [];
+    }
+    return [];
   } catch (error) {
     console.error("请求失败", error);
     throw error;
@@ -817,7 +811,10 @@ const selectExpert = async () => {
   try {
     const response = await apiClient.get("/question/findExpertUser/1");
     console.log("请求成功", response);
-    return response?.list || [];
+    if (response && response.flag === true) {
+      return response.data || [];
+    }
+    return [];
   } catch (error) {
     console.error("请求失败", error);
     throw error;
@@ -828,7 +825,10 @@ const selectQuesAns = async () => {
   try {
     const response = await apiClient.get("/question/findAllQues/1");
     console.log("请求成功", response);
-    return response?.list || [];
+    if (response && response.flag === true) {
+      return response.data || [];
+    }
+    return [];
   } catch (error) {
     console.error("请求失败", error);
     throw error;
@@ -838,10 +838,21 @@ const selectQuesAns = async () => {
 const selectKnowledge = async () => {
   try {
     const response = await apiClient.get("/knowledge/1");
-    console.log("请求成功", response);
-    return response?.list || [];
+    console.log("knowledge response", response);
+    console.log("knowledge data", response.data);
+    console.log("knowledge data.list", response.data?.list);
+    if (response && response.flag === true) {
+      if (Array.isArray(response.data)) {
+        return response.data;
+      } else if (response.data && response.data.list) {
+        console.log("returning list", response.data.list);
+        return response.data.list;
+      }
+    }
+    console.log("returning empty array");
+    return [];
   } catch (error) {
-    console.error("请求失败", error);
+    console.error("knowledge请求失败", error);
     throw error;
   }
 };
@@ -850,7 +861,10 @@ const selectGoods = async () => {
   try {
     const response = await apiClient.get("/order/goods/1");
     console.log("请求成功", response);
-    return response?.list || [];
+    if (response && response.flag === true) {
+      return response.data || [];
+    }
+    return [];
   } catch (error) {
     console.error("请求失败", error);
     throw error;
@@ -875,12 +889,14 @@ const aimatch = ()=> {
 
 //点击农业知识、专家、问答，跳转
 const expertAssis = (item)=> {
-  router.push(`/expertassist?activeSection=${item}`)
+  router.push(`/home/expertassist?activeSection=${item}`)
 };
 
 //点击某知识，跳转至知识详情
 const articleDetail = (item)=> {
-  router.push(`/AgriKnlg?knowledgeId=${item.knowledgeId}&picPath=${item.picPath}&title=${item.title}&content=${item.content}&ownName=${item.ownName}&updateTime=${item.updateTime}`)
+  const id = item.knowledgeId || item.id;
+  console.log("articleDetail knowledgeId:", id);
+  router.push(`/home/AgriKnlg?knowledgeId=${id}&picPath=${item.picPath}&title=${item.title}&content=${item.content}&ownName=${item.ownName}&updateTime=${item.updateTime}`)
 };
 
 //点击产品更多，跳转

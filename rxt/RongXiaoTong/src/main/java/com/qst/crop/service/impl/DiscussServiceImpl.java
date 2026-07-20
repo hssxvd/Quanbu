@@ -6,6 +6,7 @@ import com.qst.crop.service.DiscussService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -15,6 +16,7 @@ public class DiscussServiceImpl implements DiscussService {
 
     @Override
     public void add(Discuss discuss) {
+        discuss.setCreateTime(new Date());
         discussDao.insertSelective(discuss);
     }
 

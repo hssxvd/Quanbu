@@ -63,6 +63,7 @@ public class WebSecurityConfig {
                                 "/order/searchNeedsByKeys/**",
                                 "/order/searchAllByKeys/**",
                                 "/knowledge/**",
+                                "/discuss/**",
                                 "/paySuccessful/**",
                                 "/file/**"
                         ).permitAll()
