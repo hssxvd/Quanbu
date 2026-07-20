@@ -2,64 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qst.crop.dao.AddressDao">
     <resultMap id="BaseResultMap" type="com.qst.crop.entity.Address">
-        <id column="address_id" jdbcType="INTEGER" property="addressId" />
-        <result column="user_name" jdbcType="VARCHAR" property="userName" />
-        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="own_name" jdbcType="VARCHAR" property="ownName" />
+        <result column="consignee" jdbcType="VARCHAR" property="consignee" />
         <result column="phone" jdbcType="VARCHAR" property="phone" />
-        <result column="province" jdbcType="VARCHAR" property="province" />
-        <result column="city" jdbcType="VARCHAR" property="city" />
-        <result column="district" jdbcType="VARCHAR" property="district" />
-        <result column="detail" jdbcType="VARCHAR" property="detail" />
+        <result column="address_detail" jdbcType="VARCHAR" property="addressDetail" />
         <result column="is_default" jdbcType="INTEGER" property="isDefault" />
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
     <sql id="Base_Column_List">
-        address_id, user_name, real_name, phone, province, city, district, detail, is_default, create_time, update_time
+        id, own_name, consignee, phone, address_detail, is_default
     </sql>
 
     <insert id="insert" parameterType="com.qst.crop.entity.Address">
-        insert into tb_address (user_name, real_name, phone, province, city, district, detail, is_default, create_time, update_time)
-        values (#{userName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
-                #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR},
-                #{detail,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+        insert into tb_address (own_name, consignee, phone, address_detail, is_default)
+        values (#{ownName,jdbcType=VARCHAR}, #{consignee,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+                #{addressDetail,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER})
     </insert>
 
     <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from tb_address
-        where user_name = #{userName,jdbcType=VARCHAR}
-        order by is_default desc, create_time desc
+        where own_name = #{userName,jdbcType=VARCHAR}
+        order by is_default desc
     </select>
 
     <select id="selectByAddressId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from tb_address
-        where address_id = #{addressId,jdbcType=INTEGER}
+        where id = #{addressId,jdbcType=INTEGER}
     </select>
 
     <update id="updateByPrimaryKeySelective" parameterType="com.qst.crop.entity.Address">
         update tb_address
         <set>
-            <if test="realName != null">real_name = #{realName,jdbcType=VARCHAR},</if>
+            <if test="consignee != null">consignee = #{consignee,jdbcType=VARCHAR},</if>
             <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
-            <if test="province != null">province = #{province,jdbcType=VARCHAR},</if>
-            <if test="city != null">city = #{city,jdbcType=VARCHAR},</if>
-            <if test="district != null">district = #{district,jdbcType=VARCHAR},</if>
-            <if test="detail != null">detail = #{detail,jdbcType=VARCHAR},</if>
+            <if test="addressDetail != null">address_detail = #{addressDetail,jdbcType=VARCHAR},</if>
             <if test="isDefault != null">is_default = #{isDefault,jdbcType=INTEGER},</if>
-            update_time = #{updateTime,jdbcType=TIMESTAMP}
         </set>
-        where address_id = #{addressId,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
     </update>
 
     <delete id="deleteByAddressId" parameterType="java.lang.Integer">
-        delete from tb_address where address_id = #{addressId,jdbcType=INTEGER}
+        delete from tb_address where id = #{addressId,jdbcType=INTEGER}
     </delete>
 
     <update id="clearDefault" parameterType="java.lang.String">
-        update tb_address set is_default = 0 where user_name = #{userName,jdbcType=VARCHAR}
+        update tb_address set is_default = 0 where own_name = #{userName,jdbcType=VARCHAR}
     </update>
 </mapper>

@@ -28,10 +28,10 @@ export default createStore({
       return state.token
     },
     isExpert(state) {
-      return state.role.some(item => item.authority === "expert")
+      return state.role.some(item => item.authority === "ROLE_expert")
     },
     isAdmin(state) {
-      return state.role.some(item => item.authority === "admin")
+      return state.role.some(item => item.authority === "ROLE_admin")
     },
   },
   mutations: {

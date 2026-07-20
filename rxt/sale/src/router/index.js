@@ -6,7 +6,11 @@ import registerpage from '../views/RegisterPage.vue'
 import FinancingList from '../views/FinancingList.vue'
 import financing from '../views/FinancingPage.vue'
 import AImatch from '../views/AIMatch.vue'
-// import MyAddress from '../components/MyAddress.vue'
+import PersonalInfo from '../views/PersonalInfo.vue'
+import MyMsg from '../components/MyMsg.vue'
+import MyAddress from '../components/MyAddress.vue'
+import MyPassword from '../components/MyPassword.vue'
+import MyExpertMsg from '../components/MyExpertMsg.vue'
 
 
 const routes = [
@@ -43,6 +47,32 @@ const routes = [
   {
      path: '/register',
     component: registerpage,
+  },
+  {
+    path: '/personal',
+    component: PersonalInfo,
+    children: [
+      {
+        path: '',
+        redirect: 'mymsg'
+      },
+      {
+        path: 'mymsg',
+        component: MyMsg
+      },
+      {
+        path: 'myadd',
+        component: MyAddress
+      },
+      {
+        path: 'mypwd',
+        component: MyPassword
+      },
+      {
+        path: 'myexpertmsg',
+        component: MyExpertMsg
+      }
+    ]
   },
 ]
 const router = createRouter({

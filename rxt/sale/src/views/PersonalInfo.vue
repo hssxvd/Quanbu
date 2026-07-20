@@ -43,7 +43,7 @@
             <router-link
               to="/personal/mymsg"
               class="text-gray-800 hover:text-green-700 font-medium transition-colors"
-              :class="{ 'text-green-700 border-b-2 border-green-700 pb-1': activeNav === 'userinfo' }"
+              :class="{ 'text-green-700 border-b-2 border-green-700 pb-1': activeNav === 'personal' }"
             >
               个人信息
             </router-link>
@@ -80,8 +80,15 @@
       </div>
     </header>
 
-    <main class="flex-grow">
-      <router-view></router-view>
+    <main class="flex-grow py-6 bg-white">
+      <div class="flex container w-2/3 mx-auto h-full">
+        <div class="w-64 bg-white shadow-md">
+          <user-nav></user-nav>
+        </div>
+        <div class="flex-1 p-4 shadow-md">
+          <router-view></router-view>
+        </div>
+      </div>
     </main>
 
     <footer class="bg-green-800 py-6">
@@ -115,10 +122,11 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import UserNav from "../components/PersonalInfoNav.vue";
 
 const router = useRouter();
 const store = useStore();
-const activeNav = ref("home");
+const activeNav = ref("personal");
 
 const isLoggedIn = computed(() => {
   return store.state.token !== "";
@@ -143,7 +151,6 @@ const navigate = (page) => {
     case "agri":
       router.push("/home/agripro");
       break;
-    
   }
 };
 
@@ -154,11 +161,9 @@ const logout = () => {
 };
 
 onMounted(() => {
-  const path = router.currentRoute.value.path;
-  if (path.includes("/home") && !path.includes("/userinfo")) activeNav.value = "home";
-  else if (path.includes("/financing")) activeNav.value = "financing";
-  else if (path.includes("/expert")) activeNav.value = "expert";
-  else if (path.includes("/agri")) activeNav.value = "agri";
-  else if (path.includes("/userinfo")) activeNav.value = "userinfo";
+  activeNav.value = "personal";
 });
 </script>
+
+<style scoped>
+</style>
