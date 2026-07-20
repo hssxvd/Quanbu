@@ -11,8 +11,12 @@ import MyMsg from '../components/MyMsg.vue'
 import MyAddress from '../components/MyAddress.vue'
 import MyPassword from '../components/MyPassword.vue'
 import MyExpertMsg from '../components/MyExpertMsg.vue'
+import MyKnowledge from '../components/MyKnowledge.vue'
+import MyQuestion from '../components/MyQuestion.vue'
+import MyAppointment from '../components/MyAppointment.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
+import Question from '../views/QuestionDetails.vue'
 
 
 const routes = [
@@ -48,6 +52,10 @@ const routes = [
         path: 'AgriKnlg',
         component: AgriculturalKnowledge
       },
+      {
+        path: 'question',
+        component: Question
+      },
     ]
   },
   {
@@ -81,6 +89,18 @@ const routes = [
       {
         path: 'myexpertmsg',
         component: MyExpertMsg
+      },
+      {
+        path: 'myknowledge',
+        component: MyKnowledge
+      },
+      {
+        path: 'myquestion',
+        component: MyQuestion
+      },
+      {
+        path: 'myappointment',
+        component: MyAppointment
       }
     ]
   },
@@ -90,4 +110,4 @@ const router = createRouter({
   routes
 })
 
-export default router 
+export default router

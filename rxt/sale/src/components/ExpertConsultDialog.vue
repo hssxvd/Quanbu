@@ -41,11 +41,10 @@ const form = ref({
   contact: "",
 });
 
-// 使用 defineProps 接收父组件传递的值
 const props = defineProps({
-  expertName: {
+  expertUserName: {
     type: String,
-    default: "默认值",
+    default: "",
   },
 });
 
@@ -82,17 +81,12 @@ const handleSubmit = async () => {
       title: form.value.title,
       plantName: form.value.crop,
       phone: form.value.contact,
-      expertName: props.expertName,
+      expertName: props.expertUserName,
       status: 0,
       question: form.value.content,
     });
     //增加咨询
-    const response = await apiClient.post(`/question/add`, param.value, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: window.localStorage.token,
-      },
-    });
+    const response = await apiClient.post(`/question/add`, param.value);
 
     if (response.flag) {
       ElMessage.success("咨询成功，请耐心等待专家答复。");

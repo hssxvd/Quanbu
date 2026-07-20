@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -20,6 +24,19 @@ public class FilesUploadController {
 
     @Value("${application.upload-path}")
     private String fileDirectory;
+
+    private File getUploadDirectory(String type) {
+        File baseDir = new File(fileDirectory);
+        if (!baseDir.isAbsolute()) {
+            String userDir = System.getProperty("user.dir");
+            baseDir = new File(userDir, fileDirectory);
+        }
+        File targetDir = new File(baseDir, type);
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+        return targetDir;
+    }
 
     @Operation(summary = "头像上传")
     @PostMapping("/upload/{type}")
@@ -36,17 +53,8 @@ public class FilesUploadController {
 
         String header = UUID.randomUUID().toString().replaceAll("-", "");
         String newFileName = header + tail;
-        String targetFileLocation = fileDirectory + File.separator + type;
-        File filel = new File(targetFileLocation);
-        if (!filel.exists()) {
-            filel.mkdirs();
-        }
-
-        String targetFileName = targetFileLocation + File.separator + newFileName;
-        File targetFile = new File(targetFileName);
-        if (!targetFile.exists()) {
-            targetFile.createNewFile();
-        }
+        File targetDir = getUploadDirectory(type);
+        File targetFile = new File(targetDir, newFileName);
 
         file.transferTo(targetFile);
         return new Result<>(true, StatusCode.OK, "上传成功", type + "/" + newFileName);
@@ -67,17 +75,8 @@ public class FilesUploadController {
         Calendar calendar = Calendar.getInstance();
         String header = calendar.getTime().toString();
         String newFileName = header + tail;
-        String targetFileLocation = fileDirectory + File.separator + type;
-        File filel = new File(targetFileLocation);
-        if (!filel.exists()) {
-            filel.mkdirs();
-        }
-
-        String targetFileName = targetFileLocation + File.separator + newFileName;
-        File targetFile = new File(targetFileName);
-        if (!targetFile.exists()) {
-            targetFile.createNewFile();
-        }
+        File targetDir = getUploadDirectory(type);
+        File targetFile = new File(targetDir, newFileName);
 
         file.transferTo(targetFile);
         return new Result<>(true, StatusCode.OK, "上传成功", type + "/" + newFileName);
