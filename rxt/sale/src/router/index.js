@@ -13,6 +13,7 @@ import MyPassword from '../components/MyPassword.vue'
 import MyExpertMsg from '../components/MyExpertMsg.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
+import Question from '../views/QuestionDetails.vue'
 
 
 const routes = [
@@ -47,6 +48,10 @@ const routes = [
       {
         path: 'AgriKnlg',
         component: AgriculturalKnowledge
+      },
+      {
+        path: 'question',
+        component: Question
       },
     ]
   },
@@ -90,4 +95,4 @@ const router = createRouter({
   routes
 })
 
-export default router 
+export default router

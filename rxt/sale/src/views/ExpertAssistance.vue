@@ -78,7 +78,8 @@
         <div
           v-for="(faq, index) in quesAns"
           :key="index"
-          class="bg-white border border-gray-100 rounded-md p-6"
+          class="bg-white border border-gray-100 rounded-md p-6 cursor-pointer hover:shadow-md transition-shadow"
+          @click="viewQuestionDetail(faq)"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -87,7 +88,7 @@
             </div>
             <button
               class="px-4 py-1 bg-green-800 text-white rounded-md text-sm hover:bg-green-900 transition-colors"
-              @click="openConsultDialog({realName: faq?.expertName || '专家'})"
+              @click.stop="openConsultDialog({realName: faq?.expertName || '专家'})"
             >
               立即咨询
             </button>
@@ -242,6 +243,17 @@ const viewKnowledgeDetail = (item) => {
   router.push(
     `/home/AgriKnlg?knowledgeId=${item.knowledgeId || item.id}&picPath=${item.picPath}&title=${item.title}&content=${item.content}&ownName=${item.ownName}&updateTime=${item.updateTime}`
   );
+};
+
+const viewQuestionDetail = (faq) => {
+  router.push({
+    path: '/home/question',
+    query: {
+      question: faq.question,
+      answer: faq.answer,
+      expertName: faq.expertName
+    }
+  });
 };
 
 const searchQues = () => {

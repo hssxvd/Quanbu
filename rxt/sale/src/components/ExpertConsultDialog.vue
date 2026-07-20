@@ -87,12 +87,7 @@ const handleSubmit = async () => {
       question: form.value.content,
     });
     //增加咨询
-    const response = await apiClient.post(`/question/add`, param.value, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: window.localStorage.token,
-      },
-    });
+    const response = await apiClient.post(`/question/add`, param.value);
 
     if (response.flag) {
       ElMessage.success("咨询成功，请耐心等待专家答复。");
