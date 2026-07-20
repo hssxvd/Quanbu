@@ -574,7 +574,7 @@ onMounted(async () => {
       },
       {
         bankId: '1003',
-        icon: bank03,
+        icon: bank01,
         name: '助农贷',
         money: '150000',
         introduce: '助农贷，在线申请，期限长还款方式灵活',
