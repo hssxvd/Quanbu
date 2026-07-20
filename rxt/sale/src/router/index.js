@@ -6,7 +6,8 @@ import registerpage from '../views/RegisterPage.vue'
 import FinancingList from '../views/FinancingList.vue'
 import financing from '../views/FinancingPage.vue'
 import AImatch from '../views/AIMatch.vue'
-// import MyAddress from '../components/MyAddress.vue'
+import ExpertAssistance from '../views/ExpertAssistance.vue'
+import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 
 
 const routes = [
@@ -33,6 +34,14 @@ const routes = [
       {
         path: 'financinglist',
         component: FinancingList
+      },
+      {
+        path: 'expertassist',
+        component: ExpertAssistance
+      },
+      {
+        path: 'AgriKnlg',
+        component: AgriculturalKnowledge
       },
     ]
   },

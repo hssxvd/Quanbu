@@ -64,10 +64,12 @@ public class JwtTokenUtil {
      */
     public String generateToken(UserDetails userDetails) {
         JwtUser jwtUser = (JwtUser) userDetails;
-        Map<String, Object> claims = new HashMap<>(4);
+        Map<String, Object> claims = new HashMap<>(6);
         claims.put(Claims.SUBJECT, userDetails.getUsername());
         claims.put(Claims.ISSUED_AT, new Date());
         claims.put("username", jwtUser.getUsername());
+        claims.put("nickname", jwtUser.getNickname());
+        claims.put("avatar", jwtUser.getAvatar());
         claims.put("role", jwtUser.getAuthorities());
         return generateToken(claims);
     }

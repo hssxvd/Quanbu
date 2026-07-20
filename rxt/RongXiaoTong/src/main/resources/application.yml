@@ -22,9 +22,9 @@ spring:
     resources:
       static-locations: file:${application.upload-path}
   mvc:
-    static-path-pattern: file:d:/wangyanan/file/order,file:d:/wangyanan/file/avatar,file:d:/wangyanan/file/video
+    static-path-pattern: file:./upload/order,file:./upload/avatar,file:./upload/video
 application:
-    upload-path: d:/wangyanan/file
+    upload-path: ./upload
 
 # PageHelper 配置
 pagehelper:
