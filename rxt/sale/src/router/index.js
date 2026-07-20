@@ -12,6 +12,8 @@ import MyAddress from '../components/MyAddress.vue'
 import MyPassword from '../components/MyPassword.vue'
 import MyExpertMsg from '../components/MyExpertMsg.vue'
 import MyKnowledge from '../components/MyKnowledge.vue'
+import MyQuestion from '../components/MyQuestion.vue'
+import MyAppointment from '../components/MyAppointment.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 
@@ -86,6 +88,14 @@ const routes = [
       {
         path: 'myknowledge',
         component: MyKnowledge
+      },
+      {
+        path: 'myquestion',
+        component: MyQuestion
+      },
+      {
+        path: 'myappointment',
+        component: MyAppointment
       }
     ]
   },

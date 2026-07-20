@@ -97,6 +97,14 @@ public class QuestionController {
         return new Result(true, StatusCode.OK, "查询成功", questions);
     }
 
+    @Operation(summary = "根据角色查询问答")
+    @GetMapping("/selectByKind/{kind}")
+    public Result selectByKind(@PathVariable("kind") String kind) {
+        String type = "expert".equals(kind) ? "expert" : "questioner";
+        List<Question> questions = questionService.selectByQuestion(type);
+        return new Result(true, StatusCode.OK, "查询成功", questions);
+    }
+
     @Operation(summary = "根据id修改询问情报")
     @PutMapping("/update")
     public Result update(@RequestBody Question question, BindingResult bindingResult) {

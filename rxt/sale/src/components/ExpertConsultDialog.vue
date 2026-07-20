@@ -41,11 +41,10 @@ const form = ref({
   contact: "",
 });
 
-// 使用 defineProps 接收父组件传递的值
 const props = defineProps({
-  expertName: {
+  expertUserName: {
     type: String,
-    default: "默认值",
+    default: "",
   },
 });
 
@@ -82,7 +81,7 @@ const handleSubmit = async () => {
       title: form.value.title,
       plantName: form.value.crop,
       phone: form.value.contact,
-      expertName: props.expertName,
+      expertName: props.expertUserName,
       status: 0,
       question: form.value.content,
     });

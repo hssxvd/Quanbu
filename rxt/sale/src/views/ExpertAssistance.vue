@@ -112,7 +112,7 @@
                 style="z-index: 1"
               ></div>
               <img
-                :src="getExpertAvatar(expert.id)"
+                :src="getExpertAvatar(expert.userName)"
                 class="h-32 w-32 object-cover relative"
                 style="z-index: 2"
               />
@@ -160,8 +160,8 @@
       </div>
     </div>
 
-    <ExpertConsultDialog ref="consultDialog" :expertName="expertName" />
-    <ExpertReserveDialog ref="reserveDialog" :expertName="expertName" />
+    <ExpertConsultDialog ref="consultDialog" :expertUserName="expertUserName" />
+<ExpertReserveDialog ref="reserveDialog" :expertUserName="expertUserName" />
   </div>
 </template>
 
@@ -182,7 +182,7 @@ const tabs = [
 ];
 
 const activeTab = ref("knowledge");
-const expertName = ref("");
+const expertUserName = ref("");
 const searchKeyword = ref("");
 
 const consultDialog = ref();
@@ -223,18 +223,22 @@ const expertAvatars = [
 
 const knowledgeImg = riceImg;
 
-const getExpertAvatar = (id) => {
-  const index = (id || 1) % expertAvatars.length;
+const getExpertAvatar = (userName) => {
+  let hash = 0;
+  for (let i = 0; i < (userName || '').length; i++) {
+    hash = userName.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % expertAvatars.length;
   return expertAvatars[index] || expert01;
 };
 
 const openConsultDialog = (expert) => {
-  expertName.value = expert.realName;
+  expertUserName.value = expert.userName;
   consultDialog.value.open();
 };
 
 const openReserveDialog = (expert) => {
-  expertName.value = expert.realName;
+  expertUserName.value = expert.userName;
   reserveDialog.value.open();
 };
 
@@ -257,7 +261,10 @@ const searchQues = () => {
 const selectExpert = async () => {
   try {
     const response = await apiClient.get("/question/findExpertUser/1");
-    return response?.list || [];
+    if (response && response.flag === true && response.data && response.data.list) {
+      return response.data.list;
+    }
+    return [];
   } catch (error) {
     console.error("请求失败", error);
     throw error;
@@ -267,7 +274,10 @@ const selectExpert = async () => {
 const selectQuesAns = async () => {
   try {
     const response = await apiClient.get("/question/findAllQues/1");
-    return response?.list || [];
+    if (response && response.flag === true && response.data && response.data.list) {
+      return response.data.list;
+    }
+    return [];
   } catch (error) {
     console.error("请求失败", error);
     throw error;
