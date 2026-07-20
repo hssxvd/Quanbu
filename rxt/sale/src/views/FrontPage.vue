@@ -401,8 +401,8 @@
       </div>
     </div>
   </section>
-  <ExpertConsultDialog ref="consultDialog" :expertName="expertName"/>
-  <ExpertReserveDialog ref="reserveDialog" :expertName="expertName"/>
+  <ExpertConsultDialog ref="consultDialog" :expertUserName="expertUserName"/>
+<ExpertReserveDialog ref="reserveDialog" :expertUserName="expertUserName"/>
 </template>
 
 <script setup>
@@ -421,23 +421,15 @@ defineComponent({
 });
 
 const consultDialog = ref();
-const expertName = ref('');
+const expertUserName = ref('');
 const openConsultDialog = (expert) => {
-  // if(!window.localStorage.token){
-  //   ElMessage.error('您未登录，请先登录');
-  //   return;
-  // }
-  expertName.value=expert.realName;
+  expertUserName.value = expert.userName;
   consultDialog.value.open();
 };
 
 const reserveDialog = ref();
 const openReserveDialog = (expert) => {
-  // if(!window.localStorage.token){
-  //   ElMessage.error('您未登录，请先登录');
-  //   return;
-  // }
-  expertName.value=expert.realName;
+  expertUserName.value = expert.userName;
   reserveDialog.value.open();
 };
 
@@ -455,6 +447,12 @@ import expert02 from "@/assets/img/expert02.png";
 import expert03 from "@/assets/img/expert03.png";
 import expert04 from "@/assets/img/expert04.png";
 import expert05 from "@/assets/img/expert05.png";
+import expert06 from "@/assets/img/expert06.png";
+import expert07 from "@/assets/img/expert07.png";
+import expert08 from "@/assets/img/expert08.png";
+import expert09 from "@/assets/img/expert09.png";
+import expert10 from "@/assets/img/expert10.png";
+import expert11 from "@/assets/img/expert11.png";
 import riceImg from "@/assets/img/rice.png";
 import cornImg from "@/assets/img/jixinguo.jpg";
 import teaImg from "@/assets/img/tea.png";
@@ -464,6 +462,20 @@ import zheergenImg from "@/assets/img/zheergen_20250513155020.png";
 import renshenguoImg from "@/assets/img/renshenguo.jpg";
 
 const router = useRouter();
+
+const expertAvatars = [
+  expert01, expert02, expert03, expert04, expert05,
+  expert06, expert07, expert08, expert09, expert10, expert11
+];
+
+const getExpertAvatar = (userName) => {
+  let hash = 0;
+  for (let i = 0; i < (userName || '').length; i++) {
+    hash = userName.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % expertAvatars.length;
+  return expertAvatars[index] || expert01;
+};
 
 // Carousel data
 const currentSlide = ref(0);
@@ -598,6 +610,9 @@ onMounted(async () => {
     const expertdata = await selectExpert();
     if (expertdata && expertdata.length > 0) {
       const tempExpertFive = expertdata.slice(0, 5);
+      tempExpertFive.forEach(expert => {
+        expert.avatar = getExpertAvatar(expert.userName);
+      });
       expertFive.value = tempExpertFive;
     } else {
       throw new Error('No data');
@@ -811,8 +826,8 @@ const selectExpert = async () => {
   try {
     const response = await apiClient.get("/question/findExpertUser/1");
     console.log("请求成功", response);
-    if (response && response.flag === true) {
-      return response.data || [];
+    if (response && response.flag === true && response.data && response.data.list) {
+      return response.data.list;
     }
     return [];
   } catch (error) {
@@ -825,8 +840,8 @@ const selectQuesAns = async () => {
   try {
     const response = await apiClient.get("/question/findAllQues/1");
     console.log("请求成功", response);
-    if (response && response.flag === true) {
-      return response.data || [];
+    if (response && response.flag === true && response.data && response.data.list) {
+      return response.data.list;
     }
     return [];
   } catch (error) {
@@ -861,8 +876,8 @@ const selectGoods = async () => {
   try {
     const response = await apiClient.get("/order/goods/1");
     console.log("请求成功", response);
-    if (response && response.flag === true) {
-      return response.data || [];
+    if (response && response.flag === true && response.data && response.data.list) {
+      return response.data.list;
     }
     return [];
   } catch (error) {
