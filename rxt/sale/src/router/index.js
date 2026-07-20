@@ -11,6 +11,7 @@ import MyMsg from '../components/MyMsg.vue'
 import MyAddress from '../components/MyAddress.vue'
 import MyPassword from '../components/MyPassword.vue'
 import MyExpertMsg from '../components/MyExpertMsg.vue'
+import MyKnowledge from '../components/MyKnowledge.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 
@@ -81,6 +82,10 @@ const routes = [
       {
         path: 'myexpertmsg',
         component: MyExpertMsg
+      },
+      {
+        path: 'myknowledge',
+        component: MyKnowledge
       }
     ]
   },
