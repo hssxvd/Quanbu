@@ -44,7 +44,7 @@
         >
           <div class="w-48 h-40 flex-shrink-0">
             <img
-              :src="item.picPath || knowledgeImg"
+              :src="(item.picPath && !item.picPath.startsWith('http') ? '/api/file/' + item.picPath : item.picPath) || knowledgeImg"
               alt="知识图片"
               class="w-full h-full object-cover"
             />
