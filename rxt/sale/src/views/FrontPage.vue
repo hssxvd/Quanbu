@@ -697,8 +697,8 @@ onMounted(async () => {
       console.log('knowledgeTwo set with real data:', knowledgeTwo.value);
       console.log('knowledgeTwo[0].knowledgeId:', knowledgeTwo.value[0]?.knowledgeId);
       console.log('knowledgeTwo[0].id:', knowledgeTwo.value[0]?.id);
-      pic01.value = store.state.imgShowRoad + '/file/' + (tempquesKnowledge[0]?.picPath || '');
-      pic02.value = store.state.imgShowRoad + '/file/' + (tempquesKnowledge[1]?.picPath || '');
+      pic01.value = '/api/file/' + (tempquesKnowledge[0]?.picPath || '');
+      pic02.value = '/api/file/' + (tempquesKnowledge[1]?.picPath || '');
       console.log('knowledgeTwo.length:', knowledgeTwo.value.length);
     } else {
       throw new Error('No data');
