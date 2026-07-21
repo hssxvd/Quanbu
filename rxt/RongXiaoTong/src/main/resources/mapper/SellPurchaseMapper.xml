@@ -109,4 +109,28 @@
         from tb_sell_purchase
         where own_name = #{ownName,jdbcType=VARCHAR}
     </select>
+
+    <select id="selectByOwnName" parameterType="java.lang.String" resultType="com.qst.crop.model.MySellPurchase">
+        SELECT
+            sp.sell_purchase_id as sellPurchaseId,
+            sp.purchase_id as purchaseId,
+            sp.order_id as orderId,
+            sp.own_name as ownName,
+            sp.purchase_type as purchaseType,
+            sp.unin_pricee as uninPricee,
+            sp.sum_price as sumPrice,
+            sp.address as address,
+            sp.purchase_status as purchaseStatus,
+            sp.create_time as createTime,
+            sp.update_time as updateTime,
+            o.picture as picture,
+            o.title as title,
+            o.content as content,
+            p.own_name as buyerName
+        FROM tb_sell_purchase sp
+        LEFT JOIN tb_order o ON sp.order_id = o.order_id
+        LEFT JOIN tb_purchase p ON sp.purchase_id = p.purchase_id
+        WHERE sp.own_name = #{ownName,jdbcType=VARCHAR}
+        ORDER BY sp.create_time DESC
+    </select>
 </mapper>

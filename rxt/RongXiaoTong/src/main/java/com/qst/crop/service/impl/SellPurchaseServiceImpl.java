@@ -2,6 +2,7 @@ package com.qst.crop.service.impl;
 
 import com.qst.crop.dao.SellPurchaseDao;
 import com.qst.crop.entity.SellPurchase;
+import com.qst.crop.model.MySellPurchase;
 import com.qst.crop.service.SellPurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,10 +23,15 @@ public class SellPurchaseServiceImpl implements SellPurchaseService {
 
     @Override
     public List<SellPurchase> selectByName(){
-        //获取用户名
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = principal.getUsername();
-
         return sellPurchaseDao.selectByName(name);
+    }
+
+    @Override
+    public List<MySellPurchase> selectByOwnName(){
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+        return sellPurchaseDao.selectByOwnName(name);
     }
 }
