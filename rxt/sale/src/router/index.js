@@ -26,7 +26,6 @@ import ContactUs from '../views/ContactUs.vue'
 import ServiceTerms from '../views/ServiceTerms.vue'
 import PrivacyPolicy from '../views/PrivacyPolicy.vue'
 import GoodsDetail from '../views/GoodsDetail.vue'
-import AgriPro from '../views/AgriculturalProduct.vue'
 import MyUserManagement from '../components/MyUserManagement.vue'
 
 
@@ -90,8 +89,6 @@ const routes = [
       {
         path: 'privacy',
         component: PrivacyPolicy
-        path: 'agripro',
-        component: AgriPro
       },
       {
         path: 'goodsDetail',
