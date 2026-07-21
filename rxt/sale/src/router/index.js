@@ -19,6 +19,8 @@ import MyRequest from '../components/MyRequest.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 import Question from '../views/QuestionDetails.vue'
+import GoodsDetail from '../views/GoodsDetail.vue'
+import AgriPro from '../views/AgriculturalProduct.vue'
 
 
 const routes = [
@@ -57,6 +59,14 @@ const routes = [
       {
         path: 'question',
         component: Question
+      },
+      {
+        path: 'agripro',
+        component: AgriPro
+      },
+      {
+        path: 'goodsDetail',
+        component: GoodsDetail
       },
     ]
   },
