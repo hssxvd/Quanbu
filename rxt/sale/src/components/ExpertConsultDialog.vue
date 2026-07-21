@@ -80,6 +80,10 @@ const handleSubmit = async () => {
     ElMessage.warning("请输入咨询内容");
     return;
   }
+  if (form.value.content.trim().length < 10) {
+    ElMessage.warning("咨询内容不少于10个字");
+    return;
+  }
   if (form.value.content.trim().length > 500) {
     ElMessage.warning("咨询内容不能超过500个字符");
     return;
