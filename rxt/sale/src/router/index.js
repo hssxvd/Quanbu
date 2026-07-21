@@ -19,9 +19,9 @@ import MyRequest from '../components/MyRequest.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 import Question from '../views/QuestionDetails.vue'
-import GoodsDetail from '../views/GoodsDetail.vue'
-import AgriPro from '../views/AgriculturalProduct.vue'
 import MyUserManagement from '../components/MyUserManagement.vue'
+import MyFinancing from '../components/MyFinancing.vue'
+import Personal from '../views/PersonalInfo.vue'
 
 
 const routes = [
@@ -62,12 +62,54 @@ const routes = [
         component: Question
       },
       {
-        path: 'agripro',
-        component: AgriPro
-      },
-      {
-        path: 'goodsDetail',
-        component: GoodsDetail
+        path: 'personal',
+        component: Personal,
+        children: [
+          {
+            path: '',
+            component: MyMsg
+          },
+          {
+            path: 'mymsg',
+            component: MyMsg
+          },
+          {
+            path: 'myadd',
+            component: MyAddress
+          },
+          {
+            path: 'mypwd',
+            component: MyPassword
+          },
+          {
+            path: 'myexpertmsg',
+            component: MyExpertMsg
+          },
+          {
+            path: 'myknowledge',
+            component: MyKnowledge
+          },
+          {
+            path: 'myquestion',
+            component: MyQuestion
+          },
+          {
+            path: 'myappointment',
+            component: MyAppointment
+          },
+          {
+            path: 'products',
+            component: MyGoods
+          },
+          {
+            path: 'requests',
+            component: MyRequest
+          },
+          {
+            path: 'myfinancing',
+            component: MyFinancing
+          },
+        ]
       },
     ]
   },
@@ -126,6 +168,10 @@ const routes = [
       {
         path: 'myusermng',
         component: MyUserManagement
+      },
+      {
+        path: 'myfinancing',
+        component: MyFinancing
       }
     ]
   },
