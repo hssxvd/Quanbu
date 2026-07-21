@@ -20,8 +20,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Integer pageSize = 10;
-
     @Override
     public User selectByUserName(String userName) {
         return userDao.selectByPrimaryKey(userName);
@@ -56,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageInfo<User> findPage(Integer pageNum) {
+    public PageInfo<User> findPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<User> users = userDao.selectAll();
         PageInfo<User> userPageInfo = new PageInfo<>(users);

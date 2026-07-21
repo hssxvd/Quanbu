@@ -21,6 +21,7 @@ import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 import Question from '../views/QuestionDetails.vue'
 import GoodsDetail from '../views/GoodsDetail.vue'
 import AgriPro from '../views/AgriculturalProduct.vue'
+import MyUserManagement from '../components/MyUserManagement.vue'
 
 
 const routes = [
@@ -121,6 +122,10 @@ const routes = [
       {
         path: 'requests',
         component: MyRequest
+      },
+      {
+        path: 'myusermng',
+        component: MyUserManagement
       }
     ]
   },
