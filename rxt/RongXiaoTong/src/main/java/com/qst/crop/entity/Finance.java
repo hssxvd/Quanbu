@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Data
 public class Finance {
+    private Integer financeId;
     private Integer bankId;
     private String ownName;
     private String realName;

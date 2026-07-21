@@ -100,4 +100,40 @@ public class FinanceController {
         List<Bank> banks = bankService.selectAllBank();
         return new Result(true, StatusCode.OK, "查询成功", banks);
     }
+
+    @Operation(summary = "查询融资情况")
+    @GetMapping("/selectByName")
+    public Result selectByName() {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+
+        Finance finance = new Finance();
+        finance.setOwnName(name);
+
+        List<Finance> finances = financeService.selectByFinance(finance);
+
+        return new Result(true, StatusCode.OK, "查询成功", finances);
+    }
+
+    @Operation(summary = "根据id修改融资情报")
+    @PutMapping("/update")
+    public Result update(@RequestBody Finance finance) {
+        financeService.updateByFinance(finance);
+        return new Result(true, StatusCode.OK, "修改成功");
+    }
+
+    @Operation(summary = "根据id删除融资情报")
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable("id") Integer id) {
+        financeService.deleteByFinanceId(id);
+        return new Result(true, StatusCode.OK, "删除成功");
+    }
+
+    @Operation(summary = "根据id查询融资情报")
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable("id") Integer id) {
+        Finance finance = financeService.selectByFinanceId(id);
+
+        return new Result(true, StatusCode.OK, "查询成功", finance);
+    }
 }
