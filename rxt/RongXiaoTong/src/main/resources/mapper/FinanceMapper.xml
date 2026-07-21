@@ -194,4 +194,58 @@
     <update id="AuthorizationtoUser">
         UPDATE tb_user SET authorization = #{name} WHERE user_name = #{userName}
     </update>
+
+  <select id="selectByFinance" parameterType="com.qst.crop.entity.Finance" resultType="com.qst.crop.entity.Finance">
+    select *
+    from tb_finance
+    where own_name = #{ownName}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_finance
+    where finance_id = #{financeId,jdbcType=INTEGER}
+  </delete>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.qst.crop.entity.Finance">
+    update tb_finance
+    <set>
+      <if test="realName != null">
+        real_name = #{realName},
+      </if>
+      <if test="phone != null">
+        phone = #{phone},
+      </if>
+      <if test="idNum != null">
+        id_num = #{idNum},
+      </if>
+      <if test="money != null">
+        money = #{money},
+      </if>
+      <if test="repayment != null">
+        repayment = #{repayment},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+      <if test="combinationName1 != null">
+        combination_name1 = #{combinationName1},
+      </if>
+      <if test="combinationPhone1 != null">
+        combination_phone1 = #{combinationPhone1},
+      </if>
+      <if test="combinationIdnum1 != null">
+        combination_idnum1 = #{combinationIdnum1},
+      </if>
+      <if test="combinationName2 != null">
+        combination_name2 = #{combinationName2},
+      </if>
+      <if test="combinationPhone2 != null">
+        combination_phone2 = #{combinationPhone2},
+      </if>
+      <if test="combinationIdnum2 != null">
+        combination_idnum2 = #{combinationIdnum2},
+      </if>
+    </set>
+    where finance_id = #{financeId}
+  </update>
 </mapper>

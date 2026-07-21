@@ -71,4 +71,30 @@ public class FinanceServiceImpl implements FinanceService {
         finance.setStatus(0);
         financeDao.insertMulti(finance);
     }
+
+    @Override
+    public List<Finance> selectByFinance(Finance finance) {
+
+        List<Finance> finances = financeDao.selectByFinance(finance);
+        return finances;
+    }
+
+    @Override
+    public Finance selectByFinanceId(Integer id) {
+
+        Finance finance = financeDao.selectByPrimaryKey(id);
+        return finance;
+    }
+
+    @Override
+    public void deleteByFinanceId(Integer id) {
+
+        financeDao.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public void updateByFinance(Finance finance) {
+
+        financeDao.updateByPrimaryKeySelective(finance);
+    }
 }
