@@ -380,6 +380,94 @@ const selectRecommned = async () => {
 
 // 保存融资意向
 const saveData = async () => {
+  if (!userProfile.value.name || !userProfile.value.name.trim()) {
+    ElMessage.warning("请输入姓名");
+    return;
+  }
+  if (userProfile.value.name.trim().length > 20) {
+    ElMessage.warning("姓名不能超过20个字符");
+    return;
+  }
+
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  if (!userProfile.value.phone || !userProfile.value.phone.trim()) {
+    ElMessage.warning("请输入联系方式");
+    return;
+  }
+  if (!phoneRegex.test(userProfile.value.phone.trim())) {
+    ElMessage.warning("请输入正确的手机号码格式");
+    return;
+  }
+
+  if (!userProfile.value.address || !userProfile.value.address.trim()) {
+    ElMessage.warning("请输入地址");
+    return;
+  }
+  if (userProfile.value.address.trim().length > 200) {
+    ElMessage.warning("地址不能超过200个字符");
+    return;
+  }
+
+  if (!userProfile.value.amount || !userProfile.value.amount.trim()) {
+    ElMessage.warning("请输入意向贷款金额");
+    return;
+  }
+  const amount = parseFloat(userProfile.value.amount);
+  if (isNaN(amount) || amount <= 0) {
+    ElMessage.warning("贷款金额必须是大于0的数字");
+    return;
+  }
+  if (amount > 10000) {
+    ElMessage.warning("贷款金额不能超过10000万");
+    return;
+  }
+
+  if (!userProfile.value.application || !userProfile.value.application.trim()) {
+    ElMessage.warning("请输入用途");
+    return;
+  }
+  if (userProfile.value.application.trim().length > 100) {
+    ElMessage.warning("用途不能超过100个字符");
+    return;
+  }
+
+  if (!userProfile.value.crops || !userProfile.value.crops.trim()) {
+    ElMessage.warning("请输入农作物");
+    return;
+  }
+  if (userProfile.value.crops.trim().length > 50) {
+    ElMessage.warning("农作物名称不能超过50个字符");
+    return;
+  }
+
+  if (!userProfile.value.area || !userProfile.value.area.trim()) {
+    ElMessage.warning("请输入面积");
+    return;
+  }
+  const area = parseFloat(userProfile.value.area);
+  if (isNaN(area) || area <= 0) {
+    ElMessage.warning("面积必须是大于0的数字");
+    return;
+  }
+  if (area > 999999) {
+    ElMessage.warning("面积不能超过999999亩");
+    return;
+  }
+
+  if (!userProfile.value.term || !userProfile.value.term.trim()) {
+    ElMessage.warning("请输入贷款期限");
+    return;
+  }
+  const term = parseInt(userProfile.value.term);
+  if (isNaN(term) || term <= 0) {
+    ElMessage.warning("贷款期限必须是大于0的整数");
+    return;
+  }
+  if (term > 360) {
+    ElMessage.warning("贷款期限不能超过360个月");
+    return;
+  }
+
   try {
     const param = ref({
       realName: userProfile.value.name,
