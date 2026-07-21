@@ -20,4 +20,13 @@ public interface FinanceService {
     void add(Finance finance);
 
     void addMulti(Finance finance);
+
+
+    List<Finance> selectByFinance(Finance finance);
+
+    Finance selectByFinanceId(Integer id);
+
+    void deleteByFinanceId(Integer id);
+
+    void updateByFinance(Finance finance);
 }

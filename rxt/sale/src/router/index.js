@@ -25,6 +25,9 @@ import AboutUs from '../views/AboutUs.vue'
 import ContactUs from '../views/ContactUs.vue'
 import ServiceTerms from '../views/ServiceTerms.vue'
 import PrivacyPolicy from '../views/PrivacyPolicy.vue'
+import GoodsDetail from '../views/GoodsDetail.vue'
+import AgriPro from '../views/AgriculturalProduct.vue'
+import MyUserManagement from '../components/MyUserManagement.vue'
 
 
 const routes = [
@@ -87,6 +90,12 @@ const routes = [
       {
         path: 'privacy',
         component: PrivacyPolicy
+        path: 'agripro',
+        component: AgriPro
+      },
+      {
+        path: 'goodsDetail',
+        component: GoodsDetail
       },
     ]
   },
@@ -141,6 +150,10 @@ const routes = [
       {
         path: 'requests',
         component: MyRequest
+      },
+      {
+        path: 'myusermng',
+        component: MyUserManagement
       }
     ]
   },
