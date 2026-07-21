@@ -41,7 +41,7 @@
             </button>
             <button
               class="bg-[#007029] text-white px-3 py-1 rounded flex items-center"
-              
+              @click="showPublishDialog = true"
             >
               <PlusIcon :stroke-width="3" class="w-4 h-4 mr-1" />
               免费发布商品
@@ -63,6 +63,34 @@
             
       </div>
     </div>
+
+    <el-dialog v-model="showPublishDialog" title="发布商品" width="500px">
+      <el-form :model="publishForm" label-width="80px">
+        <el-form-item label="商品标题">
+          <el-input v-model="publishForm.title" placeholder="2-8字" />
+        </el-form-item>
+        <el-form-item label="详细介绍">
+          <el-input v-model="publishForm.description" type="textarea" placeholder="10-150字" />
+        </el-form-item>
+        <el-form-item label="价格">
+          <el-input v-model="publishForm.price" placeholder="请输入价格" />
+        </el-form-item>
+        <el-form-item label="商品图片">
+          <el-upload
+            ref="uploadRef"
+            :auto-upload="false"
+            :on-change="handleImageUpload"
+            list-type="picture-card"
+          >
+            <el-icon><PlusIcon /></el-icon>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="handleCancel">取消</el-button>
+        <el-button type="primary" @click="submitPublish">发布</el-button>
+      </template>
+    </el-dialog>
   </section>
 </template>
 
@@ -89,7 +117,7 @@ const activeTab = ref("info");
 
 const shoppingCart = () => {
   if(store.state.token!=''){
-    router.push(`/shopcart`)
+    router.push(`/home/shopcart`)
   } else {
     ElMessage.error('您未登录，请先登录');
   }
@@ -107,8 +135,6 @@ const publishForm = ref({
 const handleImageUpload = (file) => {
   publishForm.value.images.push(file);
 };
-
-const fileInfo = ref('');
 
 const uploadRef = ref();
 
@@ -140,14 +166,11 @@ const submitPublish = async () => {
   }
 
   try {
-    // 上传图片
     const uploadedImages = [];
     for (const file of publishForm.value.images) {
       const formData = new FormData();
       formData.append("file", file.raw);
 
-
-      //上传商品图片
       const response = await apiClient.post(
         `${store.state.fileUploadRoad}/file/upload/order`,
         formData,
@@ -158,40 +181,41 @@ const submitPublish = async () => {
           },
         }
       );
-      
-      if (response.flag) {
-        fileInfo.value = response.data.split('/')[1];
-      } else {
-        ElMessage.error("发布失败");
-      }
-      const param = ref({
-          title: publishForm.value.title,
-          content: publishForm.value.description,
-          price: publishForm.value.price,
-          type: 'goods',
-          picture: fileInfo.value
-          })
-      //发布商品
-       const responseOrder = await apiClient.post(
-        `/order`,
-        param.value,
-        {
-          headers: {
-            Authorization: window.localStorage.token,
-          },
-        }
-      );
-      
-      if (responseOrder.flag) {
-        ElMessage.success("发布成功");
-      } else {
-        ElMessage.error("发布失败");
-      }
 
+      if (response.flag) {
+        uploadedImages.push(response.data.split('/')[1]);
+      } else {
+        ElMessage.error("图片上传失败");
+        return;
+      }
+    }
+
+    const param = {
+      title: publishForm.value.title,
+      content: publishForm.value.description,
+      price: publishForm.value.price,
+      type: 'goods',
+      picture: uploadedImages.join(',')
+    };
+
+    const responseOrder = await apiClient.post(
+      `/order/add`,
+      param,
+      {
+        headers: {
+          Authorization: window.localStorage.token,
+        },
+      }
+    );
+
+    if (responseOrder.flag) {
+      ElMessage.success("发布成功");
+    } else {
+      ElMessage.error("发布失败");
+      return;
     }
 
     showPublishDialog.value = false;
-    // 重置表单
     publishForm.value = {
       title: '',
       description: '',
@@ -199,8 +223,8 @@ const submitPublish = async () => {
       images: []
     };
     if (uploadRef.value) {
-    uploadRef.value.clearFiles();
-  }
+      uploadRef.value.clearFiles();
+    }
   } catch (error) {
     console.error('发布商品失败:', error);
     ElMessage.error('发布商品失败');

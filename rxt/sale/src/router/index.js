@@ -19,7 +19,8 @@ import MyRequest from '../components/MyRequest.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 import Question from '../views/QuestionDetails.vue'
-import AgriPro from '../views/AgriPro.vue'
+import AgriPro from '../views/AgriculturalProduct.vue'
+import ShopCart from '../views/ShoppingCart.vue'
 import BannerArticle from '../views/BannerArticle.vue'
 import AboutUs from '../views/AboutUs.vue'
 import ContactUs from '../views/ContactUs.vue'
@@ -64,6 +65,10 @@ const routes = [
       {
         path: 'agripro',
         component: AgriPro
+      },
+      {
+        path: 'shopcart',
+        component: ShopCart
       },
       {
         path: 'bannerarticle',
