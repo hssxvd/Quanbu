@@ -32,7 +32,7 @@
             </button>
           </div>
         </div>
-        <p class="text-gray-600 text-sm">{{ address.addressDetail }}</p>
+        <p class="text-gray-600 text-sm">{{ address.province }} {{ address.city }} {{ address.district }} {{ address.addressDetail }}</p>
       </div>
 
       <button
@@ -47,7 +47,7 @@
     <el-dialog
       :title="currentAddress.id ? '编辑地址' : '添加地址'"
       v-model="dialogVisible"
-      width="400px"
+      width="500px"
     >
       <el-form :model="currentAddress" label-width="80px">
         <el-form-item label="收货人">
@@ -55,6 +55,21 @@
         </el-form-item>
         <el-form-item label="手机号码">
           <el-input v-model="currentAddress.phone" placeholder="请输入手机号码"></el-input>
+        </el-form-item>
+        <el-form-item label="省">
+          <el-select v-model="currentAddress.province" placeholder="请选择省份" @change="handleProvinceChange">
+            <el-option v-for="item in provinces" :key="item.value" :label="item.label" :value="item.label"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="市">
+          <el-select v-model="currentAddress.city" placeholder="请选择城市" @change="handleCityChange" :disabled="!currentAddress.province">
+            <el-option v-for="item in cityList" :key="item.value" :label="item.label" :value="item.label"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="县">
+          <el-select v-model="currentAddress.district" placeholder="请选择区县" :disabled="!currentAddress.city">
+            <el-option v-for="item in districtList" :key="item.value" :label="item.label" :value="item.label"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="详细地址">
           <el-input v-model="currentAddress.addressDetail" type="textarea" placeholder="请输入详细地址"></el-input>
@@ -72,18 +87,25 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import { apiClient } from "../api/apiService.js";
-import { ElMessage, ElDialog, ElForm, ElFormItem, ElInput, ElCheckbox, ElButton } from "element-plus";
+import { ElMessage, ElDialog, ElForm, ElFormItem, ElInput, ElCheckbox, ElButton, ElSelect, ElOption } from "element-plus";
+import { provinces, cities, districts } from "../data/areaData.js";
 
 const addressList = ref([]);
 const dialogVisible = ref(false);
 const isDefaultChecked = ref(false);
 
+const cityList = ref([]);
+const districtList = ref([]);
+
 const currentAddress = reactive({
   id: null,
   consignee: "",
   phone: "",
+  province: "",
+  city: "",
+  district: "",
   addressDetail: "",
   isDefault: 0,
 });
@@ -109,13 +131,45 @@ const selectAddresses = async () => {
   }
 };
 
+const handleProvinceChange = (value) => {
+  currentAddress.city = "";
+  currentAddress.district = "";
+  districtList.value = [];
+  const province = provinces.find(p => p.label === value);
+  if (province) {
+    cityList.value = cities[province.value] || [];
+  } else {
+    cityList.value = [];
+  }
+};
+
+const handleCityChange = (value) => {
+  currentAddress.district = "";
+  const province = provinces.find(p => p.label === currentAddress.province);
+  if (province) {
+    const city = cities[province.value]?.find(c => c.label === value);
+    if (city) {
+      districtList.value = districts[city.value] || [];
+    } else {
+      districtList.value = [];
+    }
+  } else {
+    districtList.value = [];
+  }
+};
+
 const addAddress = () => {
   currentAddress.id = null;
   currentAddress.consignee = "";
   currentAddress.phone = "";
+  currentAddress.province = "";
+  currentAddress.city = "";
+  currentAddress.district = "";
   currentAddress.addressDetail = "";
   currentAddress.isDefault = 0;
   isDefaultChecked.value = false;
+  cityList.value = [];
+  districtList.value = [];
   dialogVisible.value = true;
 };
 
@@ -123,9 +177,29 @@ const editAddress = (address) => {
   currentAddress.id = address.id;
   currentAddress.consignee = address.consignee;
   currentAddress.phone = address.phone;
-  currentAddress.addressDetail = address.addressDetail;
+  currentAddress.province = address.province || "";
+  currentAddress.city = address.city || "";
+  currentAddress.district = address.district || "";
+  currentAddress.addressDetail = address.addressDetail || "";
   currentAddress.isDefault = address.isDefault;
   isDefaultChecked.value = address.isDefault === 1;
+  
+  cityList.value = [];
+  districtList.value = [];
+  
+  if (currentAddress.province) {
+    const province = provinces.find(p => p.label === currentAddress.province);
+    if (province) {
+      cityList.value = cities[province.value] || [];
+      if (currentAddress.city) {
+        const city = cities[province.value]?.find(c => c.label === currentAddress.city);
+        if (city) {
+          districtList.value = districts[city.value] || [];
+        }
+      }
+    }
+  }
+  
   dialogVisible.value = true;
 };
 
