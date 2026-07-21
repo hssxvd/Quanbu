@@ -22,6 +22,7 @@ apiClient.interceptors.response.use(res => {
     return res.data
 }, err => {
     console.log(err);
+    return Promise.reject(err);
 })
 
 // 导出 apiClient

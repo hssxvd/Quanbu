@@ -181,8 +181,9 @@ onMounted(async () => {
   price.value = route.query.price;
   content.value = route.query.content;
   picture.value = route.query.picture;
-  updateTime.value = route.query.updateTime.split('T')[0];
-
+  if (route.query.updateTime) {
+    updateTime.value = route.query.updateTime.split('T')[0];
+  }
 });
 
 
@@ -254,22 +255,21 @@ const goBack = () => {
 };
 
 const addShopCart = async() => {
-    try {
-    const response = await apiClient.post(`/cart/add/${orderId.value}`, null, {
-      headers: {
-        Authorization: window.localStorage.token,
-      },
-    });
-    
+  if (!orderId.value) {
+    ElMessage.error("商品信息异常，请刷新页面重试");
+    return;
+  }
+  try {
+    const response = await apiClient.post(`/cart/add/${orderId.value}`);
     if (response.flag) {
       ElMessage.success("已添加至购物车");
     } else {
-      ElMessage.error(response.message);
+      ElMessage.error(response.message || "添加购物车失败");
     }
   } catch (error) {
+    console.error("添加购物车失败:", error);
     ElMessage.error("添加失败");
   }
-
 };
 
 </script>
