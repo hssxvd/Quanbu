@@ -3,10 +3,10 @@
     <header class="bg-white shadow-sm sticky top-0 z-50">
       <div class="container mx-auto px-6">
         <div class="flex items-center justify-between h-16">
-          <div class="flex items-center">
+          <router-link to="/home" class="flex items-center cursor-pointer">
             <img src="../assets/img/logo.png" alt="融销通" class="h-10 w-10" />
             <span class="text-xl font-bold text-green-800 ml-2">融销通</span>
-          </div>
+          </router-link>
           <nav class="flex items-center space-x-8">
             <a
               href="/home"
@@ -92,18 +92,18 @@
             <span class="text-lg font-bold text-white ml-2">融销通</span>
           </div>
           <nav class="flex items-center space-x-6">
-            <a href="#" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
+            <router-link to="/home/about" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
               关于我们
-            </a>
-            <a href="#" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
+            </router-link>
+            <router-link to="/home/contact" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
               联系方式
-            </a>
-            <a href="#" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
+            </router-link>
+            <router-link to="/home/terms" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
               服务条款
-            </a>
-            <a href="#" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
+            </router-link>
+            <router-link to="/home/privacy" class="text-white/80 hover:text-white font-medium transition-colors text-sm">
               隐私政策
-            </a>
+            </router-link>
           </nav>
         </div>
       </div>

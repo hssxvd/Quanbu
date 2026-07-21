@@ -5,9 +5,10 @@
     <div class="carousel-container w-full h-full relative overflow-hidden">
       <!-- 第一页 -->
       <div
-        class="carousel-item absolute inset-0 w-full h-full opacity-100 transition-opacity duration-500 bg-cover bg-center"
+        class="carousel-item absolute inset-0 w-full h-full opacity-100 transition-opacity duration-500 bg-cover bg-center cursor-pointer"
         :style="{ backgroundImage: `url(${banner01})` }"
         id="carousel-item01"
+        @click="goToFinancing"
       >
         <div class="container mx-auto px-6 h-full flex items-center">
           <div class="max-w-2xl">
@@ -27,9 +28,10 @@
 
       <!-- 第二页 -->
       <div
-        class="carousel-item absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 bg-cover bg-center"
+        class="carousel-item absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 bg-cover bg-center cursor-pointer"
         :style="{ backgroundImage: `url(${banner02})` }"
         id="carousel-item02"
+        @click="goToExpert"
       >
         <div class="container mx-auto px-6 h-full flex items-center">
           <div class="max-w-2xl">
@@ -49,9 +51,10 @@
 
       <!-- 第三页 -->
       <div
-        class="carousel-item absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 bg-cover bg-center"
+        class="carousel-item absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 bg-cover bg-center cursor-pointer"
         :style="{ backgroundImage: `url(${banner03})` }"
         id="carousel-item03"
+        @click="goToAgriPro"
       >
         <div class="container mx-auto px-6 h-full flex items-center">
           <div class="max-w-2xl">
@@ -916,12 +919,24 @@ const articleDetail = (item)=> {
 
 //点击产品更多，跳转
 const proMore = () => {
-  router.push(`/agripro`).catch((err) => err);
+  router.push(`/home/agripro`).catch((err) => err);
 };
 //点击产品详情，跳转
 const goodsDetail = (item)=> {
   router.push(`/goodsDetail?orderId=${item.orderId}&title=${item.title}&price=${item.price}&content=${item.content}&picture=${item.picture}&updateTime=${item.updateTime}`)
 
+};
+
+const goToFinancing = () => {
+  router.push('/home/bannerarticle?id=1').catch((err) => err);
+};
+
+const goToExpert = () => {
+  router.push('/home/bannerarticle?id=2').catch((err) => err);
+};
+
+const goToAgriPro = () => {
+  router.push('/home/bannerarticle?id=3').catch((err) => err);
 };
 
 </script>

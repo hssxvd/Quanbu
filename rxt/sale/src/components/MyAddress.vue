@@ -206,6 +206,51 @@ const editAddress = (address) => {
 const saveAddress = async () => {
   currentAddress.isDefault = isDefaultChecked.value ? 1 : 0;
 
+  if (!currentAddress.consignee || !currentAddress.consignee.trim()) {
+    ElMessage.warning("请输入收货人姓名");
+    return;
+  }
+  
+  if (currentAddress.consignee.trim().length > 20) {
+    ElMessage.warning("收货人姓名不能超过20个字符");
+    return;
+  }
+
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  if (!currentAddress.phone || !currentAddress.phone.trim()) {
+    ElMessage.warning("请输入手机号码");
+    return;
+  }
+  if (!phoneRegex.test(currentAddress.phone.trim())) {
+    ElMessage.warning("请输入正确的手机号码格式");
+    return;
+  }
+
+  if (!currentAddress.province) {
+    ElMessage.warning("请选择省份");
+    return;
+  }
+
+  if (!currentAddress.city) {
+    ElMessage.warning("请选择城市");
+    return;
+  }
+
+  if (!currentAddress.district) {
+    ElMessage.warning("请选择区县");
+    return;
+  }
+
+  if (!currentAddress.addressDetail || !currentAddress.addressDetail.trim()) {
+    ElMessage.warning("请输入详细地址");
+    return;
+  }
+
+  if (currentAddress.addressDetail.trim().length > 200) {
+    ElMessage.warning("详细地址不能超过200个字符");
+    return;
+  }
+
   try {
     let response;
     if (currentAddress.id) {

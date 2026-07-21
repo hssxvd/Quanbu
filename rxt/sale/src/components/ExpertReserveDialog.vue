@@ -82,18 +82,76 @@ const handleCancel = () => {
 };
 
 const handleSubmit = async () => {
-  if (
-    !form.value.crop ||
-    !form.value.cropIssues ||
-    !form.value.plantingArea ||
-    !form.value.contact ||
-    !form.value.address ||
-    !form.value.plantingConditions ||
-    !form.value.soilConditions
-  ) {
-    ElMessage.error("请填写所有必填项");
+  if (!form.value.crop || !form.value.crop.trim()) {
+    ElMessage.warning("请输入农作物名称");
     return;
   }
+  if (form.value.crop.trim().length > 50) {
+    ElMessage.warning("农作物名称不能超过50个字符");
+    return;
+  }
+
+  if (!form.value.cropIssues || !form.value.cropIssues.trim()) {
+    ElMessage.warning("请输入作物详细信息");
+    return;
+  }
+  if (form.value.cropIssues.trim().length > 500) {
+    ElMessage.warning("作物详细信息不能超过500个字符");
+    return;
+  }
+
+  if (!form.value.plantingConditions || !form.value.plantingConditions.trim()) {
+    ElMessage.warning("请输入农作物生长情况");
+    return;
+  }
+  if (form.value.plantingConditions.trim().length > 200) {
+    ElMessage.warning("农作物生长情况不能超过200个字符");
+    return;
+  }
+
+  if (!form.value.soilConditions || !form.value.soilConditions.trim()) {
+    ElMessage.warning("请输入土壤条件");
+    return;
+  }
+  if (form.value.soilConditions.trim().length > 200) {
+    ElMessage.warning("土壤条件不能超过200个字符");
+    return;
+  }
+
+  if (!form.value.plantingArea || !form.value.plantingArea.trim()) {
+    ElMessage.warning("请输入种植面积");
+    return;
+  }
+  const areaRegex = /^\d+(\.\d+)?$/;
+  if (!areaRegex.test(form.value.plantingArea.trim())) {
+    ElMessage.warning("种植面积必须是数字");
+    return;
+  }
+  const areaNum = parseFloat(form.value.plantingArea.trim());
+  if (areaNum <= 0 || areaNum > 999999) {
+    ElMessage.warning("种植面积必须大于0且不超过999999亩");
+    return;
+  }
+
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  if (!form.value.contact || !form.value.contact.trim()) {
+    ElMessage.warning("请输入联系方式");
+    return;
+  }
+  if (!phoneRegex.test(form.value.contact.trim())) {
+    ElMessage.warning("请输入正确的手机号码格式");
+    return;
+  }
+
+  if (!form.value.address || !form.value.address.trim()) {
+    ElMessage.warning("请输入地址");
+    return;
+  }
+  if (form.value.address.trim().length > 200) {
+    ElMessage.warning("地址不能超过200个字符");
+    return;
+  }
+
   try {
     const param = ref({
       plantName: form.value.crop,

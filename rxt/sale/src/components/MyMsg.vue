@@ -114,6 +114,33 @@ const handleImageUpload = (file) => {
 };
 
 const saveProfile = async () => {
+  if (nickname.value && nickname.value.trim().length > 20) {
+    ElMessage.warning("昵称不能超过20个字符");
+    return;
+  }
+
+  if (name.value && name.value.trim().length > 20) {
+    ElMessage.warning("姓名不能超过20个字符");
+    return;
+  }
+
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  if (phone.value && !phoneRegex.test(phone.value.trim())) {
+    ElMessage.warning("请输入正确的手机号码格式");
+    return;
+  }
+
+  const idCardRegex = /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]$/;
+  if (idCard.value && !idCardRegex.test(idCard.value.trim())) {
+    ElMessage.warning("请输入正确的身份证号码格式");
+    return;
+  }
+
+  if (address.value && address.value.trim().length > 200) {
+    ElMessage.warning("地址不能超过200个字符");
+    return;
+  }
+
   try {
     for (const file of image.value) {
       const formData = new FormData();
