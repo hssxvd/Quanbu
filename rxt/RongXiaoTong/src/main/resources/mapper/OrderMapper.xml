@@ -266,4 +266,49 @@
         set order_status = 0
         where order_id = #{orderId};
     </update>
+
+    <select id="countGoods" resultType="java.lang.Integer">
+        select count(*) from tb_order
+        where type = 'goods'
+    </select>
+
+    <select id="countGoodsByKeys" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*) from tb_order
+        where type = 'goods'
+        and title like concat('%', #{keys,jdbcType=VARCHAR}, '%')
+    </select>
+
+    <select id="selectByTypeAndPageWithStatus" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_order
+        where type = #{type,jdbcType=VARCHAR}
+        and order_status = 0
+        order by create_time desc
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <select id="countGoodsWithStatus" resultType="java.lang.Integer">
+        select count(*) from tb_order
+        where type = 'goods'
+        and order_status = 0
+    </select>
+
+    <select id="searchGoodsByKeysWithStatus" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_order
+        where type = 'goods'
+        and order_status = 0
+        and title like concat('%', #{keys,jdbcType=VARCHAR}, '%')
+        order by create_time desc
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <select id="countGoodsByKeysWithStatus" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*) from tb_order
+        where type = 'goods'
+        and order_status = 0
+        and title like concat('%', #{keys,jdbcType=VARCHAR}, '%')
+    </select>
 </mapper>

@@ -58,6 +58,7 @@ public class WebSecurityConfig {
                                 "/order/search/**",
                                 "/order/selectById/**",
                                 "/order/goods/**",
+                                "/order/public/**",
                                 "/knowledge/**",
                                 "/discuss/**",
                                 "/paySuccessful/**",

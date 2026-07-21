@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
@@ -154,6 +156,54 @@ public class OrderController {
     public Result<Void> takeUpOrder(@PathVariable String orderId) {
         orderService.takeUp(orderId);
         return new Result<>(true, 20000, "上架成功");
+    }
+
+    @GetMapping("/admin/goods/{pageNum}")
+    public Result<Map<String, Object>> adminSearchGoods(@PathVariable Integer pageNum) {
+        int pageSize = 10;
+        int offset = (pageNum - 1) * pageSize;
+        List<Order> orders = orderDao.selectByTypeAndPage("goods", offset, pageSize);
+        int total = orderDao.countGoods();
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", orders);
+        result.put("total", total);
+        return new Result<>(true, 20000, "查询成功", result);
+    }
+
+    @GetMapping("/admin/searchGoodsByKeys/{keys}/{pageNum}")
+    public Result<Map<String, Object>> adminSearchGoodsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        int pageSize = 10;
+        int offset = (pageNum - 1) * pageSize;
+        List<Order> orders = orderDao.searchGoodsByKeys(keys, offset, pageSize);
+        int total = orderDao.countGoodsByKeys(keys);
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", orders);
+        result.put("total", total);
+        return new Result<>(true, 20000, "查询成功", result);
+    }
+
+    @GetMapping("/public/goods/{pageNum}")
+    public Result<Map<String, Object>> publicSearchGoods(@PathVariable Integer pageNum) {
+        int pageSize = 10;
+        int offset = (pageNum - 1) * pageSize;
+        List<Order> orders = orderDao.selectByTypeAndPageWithStatus("goods", offset, pageSize);
+        int total = orderDao.countGoodsWithStatus();
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", orders);
+        result.put("total", total);
+        return new Result<>(true, 20000, "查询成功", result);
+    }
+
+    @GetMapping("/public/searchGoodsByKeys/{keys}/{pageNum}")
+    public Result<Map<String, Object>> publicSearchGoodsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        int pageSize = 10;
+        int offset = (pageNum - 1) * pageSize;
+        List<Order> orders = orderDao.searchGoodsByKeysWithStatus(keys, offset, pageSize);
+        int total = orderDao.countGoodsByKeysWithStatus(keys);
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", orders);
+        result.put("total", total);
+        return new Result<>(true, 20000, "查询成功", result);
     }
 
 }

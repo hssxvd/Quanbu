@@ -29,7 +29,7 @@
       >
         <div class="relative">
           <img
-            :src="$store.state.imgShowRoad + '/file/order/' + product.picture"
+            :src="getImageUrl(product.picture)"
             class="w-full aspect-square object-cover"
           />
         </div>
@@ -70,9 +70,21 @@ import { onMounted } from "vue";
 import { defineComponent } from "vue";
 import { apiClient } from "../api/apiService.js";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import Pagination from "../components/Pagination.vue";
 
 const router = useRouter();
+const store = useStore();
+
+const getImageUrl = (picture) => {
+  if (!picture) {
+    return "/src/assets/img/rice.png";
+  }
+  if (picture.startsWith("http")) {
+    return picture;
+  }
+  return store.state.imgShowRoad + "/file/" + picture;
+};
 
 // 检索关键字内容
 const searchKey = ref("");
@@ -88,12 +100,10 @@ const pagination = ref({
 // 表格数据
 const goodsData = ref([]);
 
-// 后端请求数据数据
 const selectData = async ({ page }) => {
   try {
-    //检索URL
-    const url1 = `/order/search/goods/${page}`;
-    const url2 = `/order/searchGoodsByKeys/${searchKey.value}/${page}`;
+    const url1 = `/order/public/goods/${page}`;
+    const url2 = `/order/public/searchGoodsByKeys/${searchKey.value}/${page}`;
     const url = searchFlag.value == 1 && searchKey.value ? url2 : url1;
     
     const response = await apiClient.get(url);
@@ -105,23 +115,18 @@ const selectData = async ({ page }) => {
   }
 };
 
-// 加载数据
 const loadData = async ({ page }) => {
   try {
     const res = await selectData({ page });
     console.log("loadData 接收到的响应:", res);
     
-    // 根据实际后端返回的数据结构调整
     if (res?.flag && res?.data) {
-      // 如果 data 是数组
-      if (Array.isArray(res.data)) {
-        goodsData.value = res.data;
-        pagination.value.total = res.data.length;
-      } 
-      // 如果 data 是包含 list 和 total 的对象
-      else if (res.data.list) {
+      if (res.data.list) {
         goodsData.value = res.data.list;
         pagination.value.total = res.data.total;
+      } else if (Array.isArray(res.data)) {
+        goodsData.value = res.data;
+        pagination.value.total = res.data.length;
       }
     }
     
