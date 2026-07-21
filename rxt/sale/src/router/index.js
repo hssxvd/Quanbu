@@ -19,6 +19,13 @@ import MyRequest from '../components/MyRequest.vue'
 import ExpertAssistance from '../views/ExpertAssistance.vue'
 import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
 import Question from '../views/QuestionDetails.vue'
+import AgriPro from '../views/AgriPro.vue'
+import BannerArticle from '../views/BannerArticle.vue'
+import AboutUs from '../views/AboutUs.vue'
+import ContactUs from '../views/ContactUs.vue'
+import ServiceTerms from '../views/ServiceTerms.vue'
+import PrivacyPolicy from '../views/PrivacyPolicy.vue'
+import GoodsDetail from '../views/GoodsDetail.vue'
 import MyUserManagement from '../components/MyUserManagement.vue'
 import MyFinancing from '../components/MyFinancing.vue'
 import Personal from '../views/PersonalInfo.vue'
@@ -54,12 +61,40 @@ const routes = [
         component: ExpertAssistance
       },
       {
+        path: 'agripro',
+        component: AgriPro
+      },
+      {
+        path: 'bannerarticle',
+        component: BannerArticle
+      },
+      {
         path: 'AgriKnlg',
         component: AgriculturalKnowledge
       },
       {
         path: 'question',
         component: Question
+      },
+      {
+        path: 'about',
+        component: AboutUs
+      },
+      {
+        path: 'contact',
+        component: ContactUs
+      },
+      {
+        path: 'terms',
+        component: ServiceTerms
+      },
+      {
+        path: 'privacy',
+        component: PrivacyPolicy
+      },
+      {
+        path: 'goodsDetail',
+        component: GoodsDetail
       },
       {
         path: 'personal',
