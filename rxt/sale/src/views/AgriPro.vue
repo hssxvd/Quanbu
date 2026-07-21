@@ -77,7 +77,7 @@
           >
             <div class="w-full">
               <img
-                :src="(product.picture && !product.picture.startsWith('http') ? '/api/file/' + product.picture : product.picture) || teaImg"
+                :src="getImageUrl(product.picture)"
                 class="w-full h-64 object-cover"
               />
             </div>
@@ -96,102 +96,93 @@
         <div v-if="goodsList.length === 0" class="text-center py-12">
           <p class="text-gray-500">暂无商品</p>
         </div>
+
+        <div class="flex justify-center items-center mt-8 text-sm">
+          <Pagination
+            :current-page="pagination.currentPage"
+            :page-size="pagination.pageSize"
+            :total="pagination.total"
+            @update:current-page="setCurrentPage"
+            @update:page-size="setPageSize"
+            @page-change="loadGoods"
+          />
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { apiClient } from "../api/apiService.js";
+import { useStore } from "vuex";
+import Pagination from "../components/Pagination.vue";
 import banner03 from "@/assets/img/banner03.png";
 import teaImg from "@/assets/img/tea.png";
 
 const router = useRouter();
+const store = useStore();
 const goodsList = ref([]);
 const searchKeyword = ref("");
+const searchFlag = ref(0);
+
+const pagination = reactive({
+  currentPage: 1,
+  pageSize: 10,
+  total: 0,
+});
+
+const getImageUrl = (picture) => {
+  if (!picture) {
+    return teaImg;
+  }
+  if (picture.startsWith("http")) {
+    return picture;
+  }
+  return store.state.imgShowRoad + "/file/" + picture;
+};
 
 const goodsDetail = (item) => {
   router.push(`/goodsDetail?orderId=${item.orderId}&title=${item.title}&price=${item.price}&content=${item.content}&picture=${item.picture}&updateTime=${item.updateTime}`);
 };
 
 const searchGoods = () => {
-  if (!searchKeyword.value) {
-    loadGoods();
-    return;
-  }
-  goodsList.value = goodsList.value.filter(item => 
-    item.title && item.title.includes(searchKeyword.value)
-  );
+  pagination.currentPage = 1;
+  searchFlag.value = searchKeyword.value ? 1 : 0;
+  loadGoods({ page: pagination.currentPage });
 };
 
-const selectGoods = async () => {
+const loadGoods = async ({ page } = { page: 1 }) => {
   try {
-    const response = await apiClient.get("/order/goods/1");
-    if (response && response.flag === true && response.data && response.data.list) {
-      return response.data.list;
+    let url = `/order/public/goods/${page}`;
+    if (searchFlag.value === 1 && searchKeyword.value) {
+      url = `/order/public/searchGoodsByKeys/${searchKeyword.value}/${page}`;
     }
-    return [];
-  } catch (error) {
-    console.error("请求失败", error);
-    throw error;
-  }
-};
-
-const loadGoods = async () => {
-  try {
-    const goodsdata = await selectGoods();
-    if (goodsdata && goodsdata.length > 0) {
-      goodsList.value = goodsdata;
+    const response = await apiClient.get(url);
+    if (response && response.flag === true && response.data) {
+      goodsList.value = response.data.list || [];
+      pagination.total = response.data.total || 0;
     } else {
-      goodsList.value = getMockGoods();
+      goodsList.value = [];
+      pagination.total = 0;
     }
-  } catch (e) {
-    console.warn("商品数据加载失败，使用mock数据", e);
-    goodsList.value = getMockGoods();
+  } catch (error) {
+    console.error("商品数据加载失败", error);
+    goodsList.value = [];
+    pagination.total = 0;
   }
 };
 
-const getMockGoods = () => [
-  {
-    id: 1,
-    title: "优质茶叶",
-    content: "精选高山云雾茶，香气浓郁，口感醇厚",
-    price: "128.00",
-    picture: teaImg,
-  },
-  {
-    id: 2,
-    title: "新疆西瓜",
-    content: "皮薄肉甜，水分充足，夏日解暑佳品",
-    price: "29.90",
-    picture: teaImg,
-  },
-  {
-    id: 3,
-    title: "新鲜洋葱",
-    content: "农家自种，脆嫩多汁，营养丰富",
-    price: "5.90",
-    picture: teaImg,
-  },
-  {
-    id: 4,
-    title: "贵州折耳根",
-    content: "特产鱼腥草，清热解毒，凉拌必备",
-    price: "15.80",
-    picture: teaImg,
-  },
-  {
-    id: 5,
-    title: "人参果",
-    content: "稀有水果，清甜可口，富含营养",
-    price: "38.00",
-    picture: teaImg,
-  },
-];
+const setCurrentPage = (page) => {
+  pagination.currentPage = page;
+};
+
+const setPageSize = (size) => {
+  pagination.pageSize = size;
+};
 
 onMounted(() => {
-  loadGoods();
+  loadGoods({ page: pagination.currentPage });
 });
 </script>

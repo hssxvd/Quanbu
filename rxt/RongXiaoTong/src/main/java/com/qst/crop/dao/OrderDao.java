@@ -32,4 +32,16 @@ public interface OrderDao {
 void takeDown(@Param("orderId") String orderId);
 
 void takeUp(@Param("orderId") String orderId);
+
+int countGoods();
+
+int countGoodsByKeys(@Param("keys") String keys);
+
+List<Order> selectByTypeAndPageWithStatus(@Param("type") String type, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+
+int countGoodsWithStatus();
+
+List<Order> searchGoodsByKeysWithStatus(@Param("keys") String keys, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+
+int countGoodsByKeysWithStatus(@Param("keys") String keys);
 }

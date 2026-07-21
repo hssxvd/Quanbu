@@ -237,7 +237,7 @@
         class="flex items-center space-x-2 text-gray-700 font-medium p-2 mt-4"
         :class="activeSection === 'goodsmng' ? 'text-[#007029] bg-green-50' : 'text-gray-500 hover:bg-gray-100'">
           <div class="w-6 h-6 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           </div>
           <span :class="activeSection === 'goodsmng' ? 'text-[#007029] bg-green-50' : 'text-gray-800 hover:bg-gray-100'">商品管理</span>
         </div>

@@ -28,6 +28,7 @@ import PrivacyPolicy from '../views/PrivacyPolicy.vue'
 import GoodsDetail from '../views/GoodsDetail.vue'
 import MyUserManagement from '../components/MyUserManagement.vue'
 import MyFinancing from '../components/MyFinancing.vue'
+import MyGoodsManagement from '../components/MyGoodsManagement.vue'
 import Personal from '../views/PersonalInfo.vue'
 
 
@@ -144,6 +145,10 @@ const routes = [
             path: 'myfinancing',
             component: MyFinancing
           },
+          {
+            path: 'mygoodsmng',
+            component: MyGoodsManagement
+          },
         ]
       },
     ]
@@ -207,6 +212,10 @@ const routes = [
       {
         path: 'myfinancing',
         component: MyFinancing
+      },
+      {
+        path: 'mygoodsmng',
+        component: MyGoodsManagement
       }
     ]
   },
