@@ -110,13 +110,8 @@ public class OrderController {
         return new Result<>(true, 20000, "查询成功", orders);
     }
 
-    @GetMapping("/searchGoodsByKeys/{keys}/{pageNum}")
-    public Result<List<Order>> searchGoodsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String ownName = principal.getUsername();
-        List<Order> orders = orderService.searchByCondition(ownName, keys, "goods");
-        return new Result<>(true, 20000, "查询成功", orders);
-    }
+
+
 
     @GetMapping("/searchNeedsByKeys/{keys}/{pageNum}")
     public Result<List<Order>> searchNeedsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {

@@ -57,10 +57,15 @@ public class WebSecurityConfig {
                                 "/user/add/**",
                                 "/order/search/**",
                                 "/order/selectById/**",
+                                "/order/goods/**",
                                 "/knowledge/**",
                                 "/discuss/**",
                                 "/paySuccessful/**",
-                                "/file/**"
+                                "/file/**",
+                                "/question/findExpertUser/**",
+                                "/question/findAllQues/**",
+                                "/question/findExpert/**",
+                                "/expert/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
