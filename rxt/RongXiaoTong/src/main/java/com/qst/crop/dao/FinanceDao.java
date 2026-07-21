@@ -24,4 +24,11 @@ public interface FinanceDao {
     int insertSelective(Finance record);
 
     void insertMulti(Finance finance);
-}
+
+    List<Finance> selectByFinance(Finance finance);
+
+    int deleteByPrimaryKey(Integer financeId);
+
+    Finance selectByPrimaryKey(Integer financeId);
+
+    int updateByPrimaryKeySelective(Finance record);}
