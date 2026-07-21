@@ -40,8 +40,9 @@ public class UserController {
     @Operation(summary = "分页查询所有用户")
     @GetMapping("/search/{pageNum}")
     @PreAuthorize("hasRole('admin')")
-    public Result<PageInfo<User>> findPage(@PathVariable("pageNum") Integer pageNum) {
-        PageInfo<User> pageInfo = userService.findPage(pageNum);
+    public Result<PageInfo<User>> findPage(@PathVariable("pageNum") Integer pageNum,
+                                           @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize) {
+        PageInfo<User> pageInfo = userService.findPage(pageNum, pageSize);
         return new Result<>(true, StatusCode.OK, "分页查询成功", pageInfo);
     }
 
@@ -98,6 +99,27 @@ public class UserController {
             return new Result<>(true, StatusCode.OK, "注册成功", "注册成功");
         }
         return new Result<>(false, StatusCode.ERROR, "注册失败", "注册失败");
+    }
+
+    @Operation(summary = "管理员添加用户")
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('admin')")
+    public Result<String> addUser(@Valid @RequestBody User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringJoiner stringJoiner = new StringJoiner(",");
+            bindingResult.getAllErrors().forEach(objectError -> stringJoiner.add(objectError.getDefaultMessage()));
+            String s = stringJoiner.toString();
+            return new Result<>(false, StatusCode.ERROR, "添加失败", s);
+        }
+        User existingUser = userService.selectByUserName(user.getUserName());
+        if (existingUser != null) {
+            return new Result<>(false, StatusCode.ERROR, "添加失败", "用户名已存在");
+        }
+        int result = userService.register(user);
+        if (result > 0) {
+            return new Result<>(true, StatusCode.OK, "添加成功", "添加用户成功");
+        }
+        return new Result<>(false, StatusCode.ERROR, "添加失败", "添加用户失败");
     }
 
     @Operation(summary = "查询当前登录用户信息")

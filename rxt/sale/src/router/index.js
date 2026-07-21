@@ -7,12 +7,6 @@ import FinancingList from '../views/FinancingList.vue'
 import financing from '../views/FinancingPage.vue'
 import AImatch from '../views/AIMatch.vue'
 import PersonalInfo from '../views/PersonalInfo.vue'
-import ExpertAssis from '../views/ExpertAssistance.vue'
-import AgriKnlg from '../views/AgriculturalKnowledge.vue'
-import Question from '../views/QuestionDetails.vue'
-import GoodsDetail from '../views/GoodsDetail.vue'
-import AgriPro from '../views/AgriculturalProduct.vue'
-import Personal from '../views/PersonalInfo.vue'
 import MyMsg from '../components/MyMsg.vue'
 import MyAddress from '../components/MyAddress.vue'
 import MyPassword from '../components/MyPassword.vue'
@@ -22,7 +16,12 @@ import MyQuestion from '../components/MyQuestion.vue'
 import MyAppointment from '../components/MyAppointment.vue'
 import MyGoods from '../components/MyGoods.vue'
 import MyRequest from '../components/MyRequest.vue'
-import MyFinancing from '../components/MyFinancing.vue'
+import ExpertAssistance from '../views/ExpertAssistance.vue'
+import AgriculturalKnowledge from '../views/AgriculturalKnowledge.vue'
+import Question from '../views/QuestionDetails.vue'
+import GoodsDetail from '../views/GoodsDetail.vue'
+import AgriPro from '../views/AgriculturalProduct.vue'
+import MyUserManagement from '../components/MyUserManagement.vue'
 
 
 const routes = [
@@ -39,90 +38,36 @@ const routes = [
         component: front,
       },
       {
-        path: '/financing',
+        path: 'financing',
         component: financing
       },
       {
-        path: '/aimatch',
+        path: 'aimatch',
         component: AImatch
       },
       {
-        path: '/financinglist',
+        path: 'financinglist',
         component: FinancingList
       },
       {
-        path: '/expertassist',
-        component: ExpertAssis
+        path: 'expertassist',
+        component: ExpertAssistance
       },
       {
-        path: '/agriknlg',
-        component: AgriKnlg
-      },
-      {
-        path: '/question',
-        component: Question
-      },
-      {
-        path: '/agripro',
-        component: AgriPro
-      },
-      {
-        path: '/goodsDetail',
-        component: GoodsDetail
-      },
-      {
-        path: '/personal',
-        component: Personal,
-        children: [
-          {
-            path: '',
-            component: MyMsg
-          },
-          {
-            path: 'mymsg',
-            component: MyMsg
-          },
-          {
-            path: 'myadd',
-            component: MyAddress
-          },
-          {
-            path: 'mypwd',
-            component: MyPassword
-          },
-          {
-            path: 'myexpertmsg',
-            component: MyExpertMsg
-          },
-          {
-            path: 'products',
-            component: MyGoods
-          },
-          {
-            path: 'requests',
-            component: MyRequest
-          },
-          {
-            path: 'myquestion',
-            component: MyQuestion
-          },
-          {
-            path: 'myappointment',
-            component: MyAppointment
-          },
-          {
-            path: 'myknowledge',
-            component: MyKnowledge
-          },
-          {
-            path: 'myfinancing',
-            component: MyFinancing
-          },
-        ]
+        path: 'AgriKnlg',
+        component: AgriculturalKnowledge
       },
       {
         path: 'question',
         component: Question
+      },
+      {
+        path: 'agripro',
+        component: AgriPro
+      },
+      {
+        path: 'goodsDetail',
+        component: GoodsDetail
       },
     ]
   },
@@ -179,9 +124,9 @@ const routes = [
         component: MyRequest
       },
       {
-        path: 'myfinancing',
-        component: MyFinancing
-      },
+        path: 'myusermng',
+        component: MyUserManagement
+      }
     ]
   },
 ]
