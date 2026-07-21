@@ -67,15 +67,43 @@ const handleCancel = () => {
 };
 
 const handleSubmit = async () => {
-  if (
-    !form.value.title ||
-    !form.value.content ||
-    !form.value.crop ||
-    !form.value.contact
-  ) {
-    ElMessage.error("请填写必填项");
+  if (!form.value.title || !form.value.title.trim()) {
+    ElMessage.warning("请输入咨询标题");
     return;
   }
+  if (form.value.title.trim().length > 100) {
+    ElMessage.warning("咨询标题不能超过100个字符");
+    return;
+  }
+
+  if (!form.value.content || !form.value.content.trim()) {
+    ElMessage.warning("请输入咨询内容");
+    return;
+  }
+  if (form.value.content.trim().length > 500) {
+    ElMessage.warning("咨询内容不能超过500个字符");
+    return;
+  }
+
+  if (!form.value.crop || !form.value.crop.trim()) {
+    ElMessage.warning("请输入农作物名称");
+    return;
+  }
+  if (form.value.crop.trim().length > 50) {
+    ElMessage.warning("农作物名称不能超过50个字符");
+    return;
+  }
+
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  if (!form.value.contact || !form.value.contact.trim()) {
+    ElMessage.warning("请输入联系方式");
+    return;
+  }
+  if (!phoneRegex.test(form.value.contact.trim())) {
+    ElMessage.warning("请输入正确的手机号码格式");
+    return;
+  }
+
   try {
     const param = ref({
       title: form.value.title,

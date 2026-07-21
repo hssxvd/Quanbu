@@ -301,10 +301,43 @@ const param = ref({
   avatar: "avatar.png",
 });
 
+const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/;
+
 // 处理注册
 const handleRegister = async () => {
-  if (!isFormValid.value) {
-    ElMessage.error("请检查表单填写是否正确");
+  if (!username.value || !username.value.trim()) {
+    ElMessage.warning("请输入用户名");
+    return;
+  }
+  if (!usernameRegex.test(username.value.trim())) {
+    ElMessage.warning("用户名必须以字母开头，长度3-16位，只包含字母、数字和下划线");
+    return;
+  }
+
+  if (!nickname.value || !nickname.value.trim()) {
+    ElMessage.warning("请输入昵称");
+    return;
+  }
+  if (nickname.value.trim().length < 2 || nickname.value.trim().length > 20) {
+    ElMessage.warning("昵称长度必须在2-20个字符之间");
+    return;
+  }
+
+  if (!password.value || !password.value.trim()) {
+    ElMessage.warning("请输入密码");
+    return;
+  }
+  if (!passwordRegex.test(password.value.trim())) {
+    ElMessage.warning("密码必须以字母开头，长度6-18位，只包含字母、数字和下划线");
+    return;
+  }
+
+  if (!confirmPassword.value || !confirmPassword.value.trim()) {
+    ElMessage.warning("请再次输入密码");
+    return;
+  }
+  if (password.value !== confirmPassword.value) {
+    ElMessage.warning("两次输入的密码不一致");
     return;
   }
 
