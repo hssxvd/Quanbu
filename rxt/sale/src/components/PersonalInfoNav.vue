@@ -297,10 +297,10 @@ const updateActiveSection = () => {
   } else if (path.includes('myknowledge')) {
     activeSection.value = 'knowledge';
     expandedMenus.expert = true;
-  } else if (path.includes('mysellorder')) {
+  } else if (path.includes('mysell')) {
     activeSection.value = 'sell';
     expandedMenus.order = true;
-  } else if (path.includes('mybuyorder')) {
+  } else if (path.includes('mybuy')) {
     activeSection.value = 'buy';
     expandedMenus.order = true;
   } else if (path.includes('myfinancing')) {
@@ -349,10 +349,10 @@ const KnowledgeClick = () => {
   router.push("/personal/myknowledge").catch((err) => err);
 };
 const SellClick = () => {
-  router.push("/personal/mysellorder").catch((err) => err);
+  router.push("/personal/mysell").catch((err) => err);
 };
 const BuyClick = () => {
-  router.push("/personal/mybuyorder").catch((err) => err);
+  router.push("/personal/mybuy").catch((err) => err);
 };
 const FinancingClick = () => {
   router.push("/personal/myfinancing").catch((err) => err);

@@ -3,15 +3,21 @@ package com.qst.crop.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class MyPurchase {
+public class MySellPurchase {
+
+    private Integer sellPurchaseId;
 
     private Integer purchaseId;
+
+    private Integer orderId;
 
     private String ownName;
 
     private Integer purchaseType;
 
-    private BigDecimal totalPrice;
+    private BigDecimal uninPricee;
+
+    private BigDecimal sumPrice;
 
     private String address;
 
@@ -25,12 +31,32 @@ public class MyPurchase {
 
     private String title;
 
+    private String content;
+
+    private String buyerName;
+
+    public Integer getSellPurchaseId() {
+        return sellPurchaseId;
+    }
+
+    public void setSellPurchaseId(Integer sellPurchaseId) {
+        this.sellPurchaseId = sellPurchaseId;
+    }
+
     public Integer getPurchaseId() {
         return purchaseId;
     }
 
     public void setPurchaseId(Integer purchaseId) {
         this.purchaseId = purchaseId;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public String getOwnName() {
@@ -49,12 +75,20 @@ public class MyPurchase {
         this.purchaseType = purchaseType;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public BigDecimal getUninPricee() {
+        return uninPricee;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setUninPricee(BigDecimal uninPricee) {
+        this.uninPricee = uninPricee;
+    }
+
+    public BigDecimal getSumPrice() {
+        return sumPrice;
+    }
+
+    public void setSumPrice(BigDecimal sumPrice) {
+        this.sumPrice = sumPrice;
     }
 
     public String getAddress() {
@@ -103,5 +137,21 @@ public class MyPurchase {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 }

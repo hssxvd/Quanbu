@@ -92,7 +92,8 @@
             tb1.purchase_status as purchaseStatus,
             tb1.create_time as createTime,
             tb1.update_time as updateTime,
-            MAX(tb3.picture) as picture
+            MAX(tb3.picture) as picture,
+            MAX(tb3.title) as title
         FROM tb_purchase AS tb1
         LEFT JOIN tb_purchase_detail AS tb2 ON tb1.purchase_id = tb2.purchase_id
         LEFT JOIN tb_order AS tb3 ON tb2.order_id = tb3.order_id

@@ -30,6 +30,8 @@ import GoodsDetail from '../views/GoodsDetail.vue'
 import MyUserManagement from '../components/MyUserManagement.vue'
 import MyFinancing from '../components/MyFinancing.vue'
 import MyGoodsManagement from '../components/MyGoodsManagement.vue'
+import MySellOrder from '../components/MySellOrder.vue'
+import MyBuyOrder from '../components/MyBuyOrder.vue'
 import Personal from '../views/PersonalInfo.vue'
 
 
@@ -154,6 +156,14 @@ const routes = [
             path: 'mygoodsmng',
             component: MyGoodsManagement
           },
+          {
+            path: 'mysell',
+            component: MySellOrder
+          },
+          {
+            path: 'mybuy',
+            component: MyBuyOrder
+          },
         ]
       },
     ]
@@ -221,6 +231,14 @@ const routes = [
       {
         path: 'mygoodsmng',
         component: MyGoodsManagement
+      },
+      {
+        path: 'mysell',
+        component: MySellOrder
+      },
+      {
+        path: 'mybuy',
+        component: MyBuyOrder
       }
     ]
   },

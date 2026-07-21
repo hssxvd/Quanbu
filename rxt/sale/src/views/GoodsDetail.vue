@@ -81,7 +81,7 @@
 
         <!-- 购买按钮 -->
         <div class="flex gap-4">
-          <button class="px-8 py-3 bg-[#007029] text-white rounded-md hover:bg-[#005d23] transition-colors">
+          <button class="px-8 py-3 bg-[#007029] text-white rounded-md hover:bg-[#005d23] transition-colors" @click="buyNow()">
             立即购买
           </button>
           <button class="px-8 py-3 border border-[#007029] text-[#007029] rounded-md hover:bg-[#f0f9f2] transition-colors" @click="addShopCart()">
@@ -163,7 +163,7 @@ import { ThumbsUpIcon, StarIcon, MessageSquareIcon, MinusIcon, PlusIcon } from '
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { apiClient } from "../api/apiService.js";
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 const route = useRoute();
 const router = useRouter();
@@ -269,6 +269,36 @@ const addShopCart = async() => {
   } catch (error) {
     console.error("添加购物车失败:", error);
     ElMessage.error("添加失败");
+  }
+};
+
+const buyNow = async() => {
+  if (!orderId.value) {
+    ElMessage.error("商品信息异常，请刷新页面重试");
+    return;
+  }
+  try {
+    const response = await apiClient.post(`/purchase/directBuy/${orderId.value}`);
+    if (response.flag) {
+      ElMessage.success("购买成功！");
+      await ElMessageBox.confirm(
+        `恭喜！您已成功购买该商品。`,
+        "购买成功",
+        {
+          confirmButtonText: "查看订单",
+          cancelButtonText: "继续逛逛",
+          type: "success",
+          distinguishCancelAndClose: true,
+        }
+      ).then(() => {
+        router.push("/personal/mybuy");
+      }).catch(() => {});
+    } else {
+      ElMessage.error(response.message || "购买失败");
+    }
+  } catch (error) {
+    console.error("购买失败:", error);
+    ElMessage.error("购买失败");
   }
 };
 
