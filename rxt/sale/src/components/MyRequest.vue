@@ -171,7 +171,7 @@ const getImageUrl = (picture) => {
   if (picture.startsWith("http")) {
     return picture;
   }
-  return store.state.imgShowRoad + "/file/" + picture;
+  return store.state.imgShowRoad + "/file/order/" + picture;
 };
 
 onMounted(async () => {
@@ -235,13 +235,13 @@ const handleFileUpload = async (event) => {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await apiClient.post("/file/upload/knowledge", formData, {
+      const response = await apiClient.post("/file/upload/order", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       if (response.flag && response.data) {
-        publishForm.pic = response.data;
+        publishForm.pic = response.data.split('/')[1];
       }
     } catch (error) {
       console.error("上传图片失败", error);

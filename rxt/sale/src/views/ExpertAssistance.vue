@@ -44,7 +44,7 @@
         >
           <div class="w-48 h-40 flex-shrink-0">
             <img
-              :src="(item.picPath && !item.picPath.startsWith('http') ? '/api/file/' + item.picPath : item.picPath) || knowledgeImg"
+              :src="getKnowledgeImg(item.picPath)"
               alt="知识图片"
               class="w-full h-full object-cover"
             />
@@ -241,6 +241,15 @@ const openConsultDialog = (expert) => {
 const openReserveDialog = (expert) => {
   expertUserName.value = expert.userName;
   reserveDialog.value.open();
+};
+
+const getKnowledgeImg = (picPath) => {
+  if (!picPath) return knowledgeImg;
+  if (picPath.startsWith('http')) return picPath;
+  if (picPath.includes('/')) {
+    return '/api/file/' + picPath;
+  }
+  return '/src/assets/img/' + picPath;
 };
 
 const viewKnowledgeDetail = (item) => {

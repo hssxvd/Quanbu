@@ -20,9 +20,9 @@ spring:
     name: uploadService8007
   web:
     resources:
-      static-locations: file:${application.upload-path}
+      static-locations: classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/
   mvc:
-    static-path-pattern: file:./upload/order,file:./upload/avatar,file:./upload/video
+    static-path-pattern: /static/**
 application:
     upload-path: ./upload
 

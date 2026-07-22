@@ -113,7 +113,7 @@ const getImageUrl = (picture) => {
   if (picture.startsWith("http")) {
     return picture;
   }
-  return store.state.imgShowRoad + "/file/" + picture;
+  return store.state.imgShowRoad + "/file/order/" + picture;
 };
 
 onMounted(async () => {

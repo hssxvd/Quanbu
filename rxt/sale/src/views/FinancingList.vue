@@ -292,11 +292,17 @@ const imgArray = ref([
     if (bankdata && bankdata.length > 0) {
       let bankMsg='';
       bankdata.forEach((item) => {
-        imgArray.value.map((item1) => {
-          if (item.bankId == item1.id) {
-            item['icon']=item1.icon;
+        let matched = null;
+        imgArray.value.forEach((item1) => {
+          if (String(item.bankId) === String(item1.id)) {
+            matched = item1.icon;
           }
         });
+        if (!matched && item.picture) {
+          item['icon'] = `${store.state.imgShowRoad}/file/bank/${item.picture}`;
+        } else {
+          item['icon'] = matched || bank01;
+        }
         bankMsg = item['introduce'].split('，')[0].replace(/"/g, '');
         item['name'] = bankMsg;
         item['tags'] = [

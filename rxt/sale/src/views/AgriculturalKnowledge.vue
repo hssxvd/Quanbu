@@ -95,7 +95,10 @@ const goBack = () => {
 const getImageUrl = (picPath) => {
   if (!picPath) return "";
   if (picPath.startsWith("http")) return picPath;
-  return `/api/file/${picPath}`;
+  if (picPath.includes('/')) {
+    return '/api/file/' + picPath;
+  }
+  return '/src/assets/img/' + picPath;
 };
 
 const getKnowledgeById = async (knowledgeId) => {
