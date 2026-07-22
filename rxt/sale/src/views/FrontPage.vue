@@ -554,11 +554,17 @@ onMounted(async () => {
       const tempFirstFour = bankdata.slice(0, 4);
       let bankMsg = '';
       tempFirstFour.forEach((item) => {
-        imgArray.value.map((item1) => {
-          if (item.bankId == item1.id) {
-            item['icon'] = item1.icon;
+        let matched = null;
+        imgArray.value.forEach((item1) => {
+          if (String(item.bankId) === String(item1.id)) {
+            matched = item1.icon;
           }
         });
+        if (!matched && item.picture) {
+          item['icon'] = `${store.state.imgShowRoad}/file/bank/${item.picture}`;
+        } else {
+          item['icon'] = matched || bank01;
+        }
         bankMsg = item['introduce']?.split('，')[0]?.replace(/"/g, '') || '';
         item['name'] = bankMsg;
       });
@@ -589,7 +595,7 @@ onMounted(async () => {
       },
       {
         bankId: '1003',
-        icon: bank01,
+        icon: bank03,
         name: '助农贷',
         money: '150000',
         introduce: '助农贷，在线申请，期限长还款方式灵活',
@@ -715,8 +721,10 @@ onMounted(async () => {
       console.log('knowledgeTwo set with real data:', knowledgeTwo.value);
       console.log('knowledgeTwo[0].knowledgeId:', knowledgeTwo.value[0]?.knowledgeId);
       console.log('knowledgeTwo[0].id:', knowledgeTwo.value[0]?.id);
-      pic01.value = '/api/file/' + (tempquesKnowledge[0]?.picPath || '');
-      pic02.value = '/api/file/' + (tempquesKnowledge[1]?.picPath || '');
+      const p1 = tempquesKnowledge[0]?.picPath || '';
+      const p2 = tempquesKnowledge[1]?.picPath || '';
+      pic01.value = p1.includes('/') ? '/api/file/' + p1 : '/src/assets/img/' + (p1 || 'rice.png');
+      pic02.value = p2.includes('/') ? '/api/file/' + p2 : '/src/assets/img/' + (p2 || 'corn.png');
       console.log('knowledgeTwo.length:', knowledgeTwo.value.length);
     } else {
       throw new Error('No data');

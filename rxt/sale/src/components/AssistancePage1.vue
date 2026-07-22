@@ -8,7 +8,7 @@
       <div class="flex-1 bg-white p-4 rounded-md flex">
         <div class="flex-shrink-0 mr-4">
           <img
-            :src="$store.state.imgShowRoad + '/file/order/' + article.picPath"
+            :src="getKnowledgeImg(article.picPath)"
             alt="Tea plant"
             class="w-24 h-24 object-cover rounded-md"
           />
@@ -46,6 +46,15 @@ import { useRouter } from "vue-router";
 import Pagination from "../components/Pagination.vue";
 
 const router = useRouter();
+
+const getKnowledgeImg = (picPath) => {
+  if (!picPath) return "";
+  if (picPath.startsWith("http")) return picPath;
+  if (picPath.includes('/')) {
+    return '/api/file/' + picPath;
+  }
+  return '/src/assets/img/' + picPath;
+};
 
 // 分页状态
 const pagination = ref({

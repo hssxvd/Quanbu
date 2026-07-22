@@ -82,7 +82,10 @@ const publishForm = reactive({
 const getImgUrl = (picPath) => {
   if (!picPath) return "";
   if (picPath.startsWith("http")) return picPath;
-  return store.state.imgShowRoad + "/file/" + picPath;
+  if (picPath.includes('/')) {
+    return '/api/file/' + picPath;
+  }
+  return '/src/assets/img/' + picPath;
 };
 
 onMounted(async () => {
