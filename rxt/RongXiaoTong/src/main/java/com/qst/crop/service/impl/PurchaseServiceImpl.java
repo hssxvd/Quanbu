@@ -32,4 +32,9 @@ public class PurchaseServiceImpl implements PurchaseService {
         String name = principal.getUsername();
         return purchaseDao.selectByPurchase(name);
     }
+
+    @Override
+    public void updateStatus(Integer purchaseId, Integer purchaseStatus) {
+        purchaseDao.updateStatus(purchaseId, purchaseStatus);
+    }
 }

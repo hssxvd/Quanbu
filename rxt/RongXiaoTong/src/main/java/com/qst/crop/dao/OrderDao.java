@@ -29,6 +29,8 @@ public interface OrderDao {
 
     List<Order> searchGoodsByKeys(@Param("keys") String keys, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
 
+    List<Order> searchMyGoodsByKeys(@Param("ownName") String ownName, @Param("keys") String keys, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+
 void takeDown(@Param("orderId") String orderId);
 
 void takeUp(@Param("orderId") String orderId);
@@ -44,4 +46,10 @@ int countGoodsWithStatus();
 List<Order> searchGoodsByKeysWithStatus(@Param("keys") String keys, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
 
 int countGoodsByKeysWithStatus(@Param("keys") String keys);
+
+int countNeedsWithStatus();
+
+List<Order> searchNeedsByKeysWithStatus(@Param("keys") String keys, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+
+int countNeedsByKeysWithStatus(@Param("keys") String keys);
 }

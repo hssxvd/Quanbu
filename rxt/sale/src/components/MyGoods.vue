@@ -120,8 +120,37 @@
             v-model="publishForm.price"
             :min="0"
             :precision="2"
-            placeholder="请输入商品价格"
+            placeholder="请输入商品价格（无规格时使用）"
           />
+        </el-form-item>
+
+        <el-form-item label="商品规格">
+          <div class="w-full">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-gray-500">设置多个规格（如3斤、5斤、9斤），不同规格不同价格</span>
+              <el-button size="small" type="primary" @click="addSpecRow">
+                <el-icon><PlusIcon /></el-icon>
+                添加规格
+              </el-button>
+            </div>
+            <div v-if="publishForm.specs.length > 0" class="grid grid-cols-1 gap-2">
+              <div class="flex items-center gap-2 px-2 py-1 bg-gray-50 rounded text-xs text-gray-500">
+                <span class="w-24">规格名称</span>
+                <span class="w-20">价格（元）</span>
+                <span class="w-16">库存</span>
+                <span class="w-12">操作</span>
+              </div>
+              <div v-for="(spec, index) in publishForm.specs" :key="index" class="flex items-center gap-2">
+                <el-input v-model="spec.specName" placeholder="如：3斤装" class="w-24" />
+                <el-input v-model="spec.specPrice" placeholder="价格" class="w-20" />
+                <el-input v-model="spec.specStock" placeholder="库存" class="w-16" />
+                <el-button size="small" type="danger" @click="removeSpecRow(index)">删除</el-button>
+              </div>
+            </div>
+            <div v-if="publishForm.specs.length === 0" class="text-xs text-gray-400">
+              未设置规格时使用默认定价
+            </div>
+          </div>
         </el-form-item>
       </el-form>
 
@@ -141,6 +170,7 @@ import { apiClient } from "../api/apiService.js";
 import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import Pagination from "./Pagination.vue";
+import { PlusIcon } from "lucide-vue-next";
 
 const store = useStore();
 
@@ -162,7 +192,16 @@ const publishForm = reactive({
   title: "",
   description: "",
   price: "",
+  specs: [],
 });
+
+const addSpecRow = () => {
+  publishForm.specs.push(reactive({ specName: "", specPrice: "", specStock: "" }));
+};
+
+const removeSpecRow = (index) => {
+  publishForm.specs.splice(index, 1);
+};
 
 const getImageUrl = (picture) => {
   if (!picture) {
@@ -180,7 +219,7 @@ onMounted(async () => {
 
 const loadData = async () => {
   try {
-    const response = await apiClient.get(`/order/search/goods/${pagination.currentPage}`);
+    const response = await apiClient.get(`/order/goods/${pagination.currentPage}`);
     if (response.flag && response.data && response.data.length > 0) {
       goodsData.value = response.data;
       pagination.total = response.data.length;
@@ -202,7 +241,7 @@ const searchGoods = async () => {
   }
   try {
     const response = await apiClient.get(
-      `/order/searchGoodsByKeys/${searchKey.value}/${pagination.currentPage}`
+      `/order/search/searchGoodsByKeys/${searchKey.value}/${pagination.currentPage}`
     );
     if (response.flag && response.data) {
       goodsData.value = response.data;
@@ -254,16 +293,35 @@ const handleCancel = () => {
   publishForm.title = "";
   publishForm.description = "";
   publishForm.price = "";
+  publishForm.specs = [];
   fileInfo.value = null;
 };
 
-const proDataChange = (product) => {
+const proDataChange = async (product) => {
   publishForm.orderId = product.orderId;
   publishForm.pic = product.picture;
   publishForm.title = product.title;
   publishForm.description = product.content;
   publishForm.price = product.price;
   fileInfo.value = getImageUrl(product.picture);
+  
+  publishForm.specs = [];
+  if (product.orderId) {
+    try {
+      const res = await apiClient.get(`/spec/list/${product.orderId}`);
+      if (res.flag && res.data) {
+        for (const spec of res.data) {
+          publishForm.specs.push(reactive({
+            specName: spec.specName,
+            specPrice: spec.specPrice,
+            specStock: spec.specStock
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("加载规格失败", err);
+    }
+  }
 };
 
 const deleteGoods = async (product) => {
@@ -299,6 +357,18 @@ const submitPublish = async () => {
     return;
   }
 
+  const validSpecs = publishForm.specs.filter(s => {
+    const name = String(s.specName || "").trim();
+    const price = s.specPrice;
+    return name.length > 0 && price !== "" && price !== null && price !== undefined && !isNaN(Number(price));
+  });
+  for (const spec of validSpecs) {
+    if (isNaN(Number(spec.specPrice)) || Number(spec.specPrice) <= 0) {
+      ElMessage.error('规格价格必须为正数');
+      return;
+    }
+  }
+
   try {
     const param = {
       orderId: publishForm.orderId ? publishForm.orderId : null,
@@ -307,7 +377,11 @@ const submitPublish = async () => {
       price: publishForm.price,
       picture: publishForm.pic,
       type: "goods",
+      specs: validSpecs,
     };
+    console.log("DEBUG: publishForm.specs =", JSON.stringify(publishForm.specs));
+    console.log("DEBUG: validSpecs =", JSON.stringify(validSpecs));
+    console.log("DEBUG: sending params =", JSON.stringify(param));
 
     let response;
     if (publishForm.orderId) {

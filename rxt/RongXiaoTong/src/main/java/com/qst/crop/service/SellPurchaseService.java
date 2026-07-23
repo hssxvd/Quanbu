@@ -9,4 +9,6 @@ public interface SellPurchaseService {
     void add(SellPurchase sellPurchase);
     List<SellPurchase> selectByName();
     List<MySellPurchase> selectByOwnName();
+
+    void updateStatus(Integer purchaseId, Integer purchaseStatus);
 }

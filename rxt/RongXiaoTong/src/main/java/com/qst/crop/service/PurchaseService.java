@@ -12,4 +12,6 @@ public interface PurchaseService {
     Purchase selectNewPurchaseId(String ownName);
 
     List<MyPurchase> selectBuys();
+
+    void updateStatus(Integer purchaseId, Integer purchaseStatus);
 }

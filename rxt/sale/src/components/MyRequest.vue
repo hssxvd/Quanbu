@@ -180,7 +180,7 @@ onMounted(async () => {
 
 const loadData = async () => {
   try {
-    const response = await apiClient.get(`/order/search/needs/${pagination.currentPage}`);
+    const response = await apiClient.get(`/order/needs/${pagination.currentPage}`);
     if (response.flag && response.data && response.data.length > 0) {
       goodsData.value = response.data;
       pagination.total = response.data.length;
@@ -202,7 +202,7 @@ const searchGoods = async () => {
   }
   try {
     const response = await apiClient.get(
-      `/order/search/searchGoodsByKeys/${searchKey.value}/${pagination.currentPage}`
+      `/order/search/searchNeedsByKeys/${searchKey.value}/${pagination.currentPage}`
     );
     if (response.flag && response.data) {
       goodsData.value = response.data;

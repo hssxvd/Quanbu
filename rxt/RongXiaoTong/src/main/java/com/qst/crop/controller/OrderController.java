@@ -1,9 +1,12 @@
 package com.qst.crop.controller;
 
 import com.qst.crop.common.Result;
+import com.qst.crop.common.StatusCode;
 import com.qst.crop.dao.OrderDao;
 import com.qst.crop.entity.Order;
+import com.qst.crop.entity.OrderSpec;
 import com.qst.crop.service.OrderService;
+import com.qst.crop.service.OrderSpecService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +29,9 @@ public class OrderController {
     @Autowired
     private OrderDao orderDao;
 
+    @Autowired
+    private OrderSpecService orderSpecService;
+
     @GetMapping("/search/{type}/{pageNum}")
     public Result<List<Order>> searchByTypeAndPage(@PathVariable String type, @PathVariable Integer pageNum) {
         int pageSize = 10;
@@ -35,9 +41,18 @@ public class OrderController {
 
     @GetMapping("/search/searchGoodsByKeys/{keys}/{pageNum}")
     public Result<List<Order>> searchGoodsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String ownName = principal.getUsername();
         int pageSize = 10;
-        int offset = (pageNum - 1) * pageSize;
-        List<Order> orders = orderDao.searchGoodsByKeys(keys, offset, pageSize);
+        List<Order> orders = orderService.searchMyGoodsByKeys(ownName, keys, pageNum, pageSize);
+        return new Result<>(true, 20000, "查询成功", orders);
+    }
+
+    @GetMapping("/search/searchNeedsByKeys/{keys}/{pageNum}")
+    public Result<List<Order>> searchSearchNeedsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String ownName = principal.getUsername();
+        List<Order> orders = orderService.searchByCondition(ownName, keys, "needs");
         return new Result<>(true, 20000, "查询成功", orders);
     }
 
@@ -59,20 +74,88 @@ public class OrderController {
     }
 
     @PostMapping("/add")
-    public Result<Void> addOrder(@RequestBody Order order) {
+    public Result<Map<String, Object>> addOrder(@RequestBody Map<String, Object> payload) {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("DEBUG: Full payload received = " + payload);
+        System.out.println("DEBUG: payload keys = " + payload.keySet());
+        
+        Order order = new Order();
+        order.setTitle((String) payload.get("title"));
+        order.setPrice(new java.math.BigDecimal(String.valueOf(payload.get("price"))));
+        order.setContent((String) payload.get("content"));
+        order.setPicture((String) payload.get("picture"));
+        order.setType((String) payload.get("type"));
+        order.setCooperationName((String) payload.get("cooperationName"));
+        order.setAddress((String) payload.get("address"));
+        order.setOrderStatus(0);
         order.setOwnName(principal.getUsername());
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         orderService.addOrder(order);
-        return new Result<>(true, 20000, "添加成功");
+
+        System.out.println("DEBUG: orderId after insert = " + order.getOrderId());
+
+        // 如果有规格，保存规格
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> specs = (List<Map<String, Object>>) payload.get("specs");
+        System.out.println("DEBUG: specs received = " + (specs != null ? specs.size() : "null"));
+        
+        List<OrderSpec> specList = new java.util.ArrayList<>();
+        if (specs != null && !specs.isEmpty()) {
+            for (Map<String, Object> specMap : specs) {
+                OrderSpec spec = new OrderSpec();
+                spec.setOrderId(order.getOrderId());
+                spec.setSpecName(String.valueOf(specMap.get("specName")));
+                spec.setSpecPrice(new java.math.BigDecimal(String.valueOf(specMap.get("specPrice"))));
+                String stockStr = specMap.get("specStock") != null ? specMap.get("specStock").toString().trim() : "";
+                spec.setSpecStock(stockStr.isEmpty() || stockStr.equals("null") ? 999 : Integer.valueOf(stockStr));
+                spec.setSpecSales(0);
+                spec.setSpecSort(specs.indexOf(specMap));
+                spec.setCreateTime(new Date());
+                specList.add(spec);
+            }
+            System.out.println("DEBUG: saving " + specList.size() + " specs, first spec orderId = " + (specList.size() > 0 ? specList.get(0).getOrderId() : "N/A"));
+            orderSpecService.addSpecs(specList);
+            System.out.println("DEBUG: specs saved successfully");
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("orderId", order.getOrderId());
+        return new Result<>(true, 20000, "添加成功", result);
     }
 
     @PutMapping("/{orderId}")
-    public Result<Void> updateOrder(@RequestBody Order order, @PathVariable Integer orderId) {
+    public Result<Void> updateOrder(@RequestBody Map<String, Object> payload, @PathVariable Integer orderId) {
+        Order order = new Order();
         order.setOrderId(orderId);
+        order.setTitle((String) payload.get("title"));
+        order.setPrice(new java.math.BigDecimal(String.valueOf(payload.get("price"))));
+        order.setContent((String) payload.get("content"));
+        order.setPicture((String) payload.get("picture"));
+        order.setType((String) payload.get("type"));
         order.setUpdateTime(new Date());
         orderService.updateOrder(order);
+
+        orderSpecService.deleteByOrderId(orderId);
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> specs = (List<Map<String, Object>>) payload.get("specs");
+        if (specs != null && !specs.isEmpty()) {
+            List<OrderSpec> specList = new java.util.ArrayList<>();
+            for (Map<String, Object> specMap : specs) {
+                OrderSpec spec = new OrderSpec();
+                spec.setOrderId(orderId);
+                spec.setSpecName(String.valueOf(specMap.get("specName")));
+                spec.setSpecPrice(new java.math.BigDecimal(String.valueOf(specMap.get("specPrice"))));
+                String stockStr = specMap.get("specStock") != null ? specMap.get("specStock").toString().trim() : "";
+                spec.setSpecStock(stockStr.isEmpty() || stockStr.equals("null") ? 999 : Integer.valueOf(stockStr));
+                spec.setSpecSales(0);
+                spec.setSpecSort(specs.indexOf(specMap));
+                spec.setCreateTime(new Date());
+                specList.add(spec);
+            }
+            orderSpecService.addSpecs(specList);
+        }
         return new Result<>(true, 20000, "更新成功");
     }
 
@@ -200,6 +283,30 @@ public class OrderController {
         int offset = (pageNum - 1) * pageSize;
         List<Order> orders = orderDao.searchGoodsByKeysWithStatus(keys, offset, pageSize);
         int total = orderDao.countGoodsByKeysWithStatus(keys);
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", orders);
+        result.put("total", total);
+        return new Result<>(true, 20000, "查询成功", result);
+    }
+
+    @GetMapping("/public/needs/{pageNum}")
+    public Result<Map<String, Object>> publicSearchNeeds(@PathVariable Integer pageNum) {
+        int pageSize = 10;
+        int offset = (pageNum - 1) * pageSize;
+        List<Order> orders = orderDao.selectByTypeAndPageWithStatus("needs", offset, pageSize);
+        int total = orderDao.countNeedsWithStatus();
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", orders);
+        result.put("total", total);
+        return new Result<>(true, 20000, "查询成功", result);
+    }
+
+    @GetMapping("/public/searchNeedsByKeys/{keys}/{pageNum}")
+    public Result<Map<String, Object>> publicSearchNeedsByKeys(@PathVariable String keys, @PathVariable Integer pageNum) {
+        int pageSize = 10;
+        int offset = (pageNum - 1) * pageSize;
+        List<Order> orders = orderDao.searchNeedsByKeysWithStatus(keys, offset, pageSize);
+        int total = orderDao.countNeedsByKeysWithStatus(keys);
         Map<String, Object> result = new HashMap<>();
         result.put("list", orders);
         result.put("total", total);
