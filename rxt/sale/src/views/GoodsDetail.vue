@@ -25,7 +25,7 @@
       <!-- 商品图片区域 -->
       <div class="w-full md:w-3/5 ml-auto">
         <div class="rounded-lg overflow-hidden">
-          <img :src="$store.state.imgShowRoad + '/file/order/' + picture" class="w-2/3 h-auto object-cover ml-auto" />
+          <img :src="getImageUrl(picture)" class="w-2/3 h-auto object-cover ml-auto" />
         </div>
       </div>
 
@@ -158,7 +158,7 @@
           
           <p>{{ content }}</p>
           <div class="mt-4 flex flex-col md:flex-row justify-center">
-            <img :src="$store.state.imgShowRoad + '/file/order/' + picture" class="w-2/3 h-auto rounded-lg" />
+            <img :src="getImageUrl(picture)" class="w-2/3 h-auto rounded-lg" />
           </div>
         </div>
         
@@ -211,6 +211,7 @@ import { ref, onMounted, computed } from "vue";
 import { apiClient } from "../api/apiService.js";
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { useStore } from 'vuex';
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const store = useStore();
 

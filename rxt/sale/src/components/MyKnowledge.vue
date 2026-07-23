@@ -64,6 +64,7 @@ import { ref, reactive, onMounted } from "vue";
 import { apiClient } from "../api/apiService.js";
 import { ElMessage, ElDialog, ElForm, ElFormItem, ElInput, ElButton } from "element-plus";
 import { useStore } from "vuex";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const store = useStore();
 
@@ -80,12 +81,7 @@ const publishForm = reactive({
 });
 
 const getImgUrl = (picPath) => {
-  if (!picPath) return "";
-  if (picPath.startsWith("http")) return picPath;
-  if (picPath.includes('/')) {
-    return '/api/file/' + picPath;
-  }
-  return '/src/assets/img/' + picPath;
+  return getImageUrl(picPath);
 };
 
 onMounted(async () => {

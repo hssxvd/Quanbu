@@ -19,7 +19,7 @@
                       style="z-index: 1"
                     ></div>
                     <img
-                      :src="$store.state.imgShowRoad + '/file/avatar/' + specialist.avatar"
+                      :src="getImageUrl(specialist.avatar)"
                       class="h-32 w-32 object-cover relative"
                       style="z-index: 2"
                     />
@@ -134,6 +134,7 @@ import { ElMessage } from 'element-plus';
 import Pagination from "../components/Pagination.vue";
 import ExpertConsultDialog from "../components/ExpertConsultDialog.vue";
 import ExpertReserveDialog from "../components/ExpertReserveDialog.vue";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 // // 表格数据
 // const expertData = ref([]);

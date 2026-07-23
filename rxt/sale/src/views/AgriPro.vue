@@ -121,6 +121,7 @@ import { useStore } from "vuex";
 import Pagination from "../components/Pagination.vue";
 import banner03 from "@/assets/img/banner03.png";
 import teaImg from "@/assets/img/tea.png";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const router = useRouter();
 const store = useStore();
@@ -133,16 +134,6 @@ const pagination = reactive({
   pageSize: 10,
   total: 0,
 });
-
-const getImageUrl = (picture) => {
-  if (!picture) {
-    return teaImg;
-  }
-  if (picture.startsWith("http")) {
-    return picture;
-  }
-  return store.state.imgShowRoad + "/file/order/" + picture;
-};
 
 const goodsDetail = (item) => {
   router.push(`/goodsDetail?orderId=${item.orderId}&title=${item.title}&price=${item.price}&content=${item.content}&picture=${item.picture}&updateTime=${item.updateTime}&ownName=${item.ownName || ''}`);

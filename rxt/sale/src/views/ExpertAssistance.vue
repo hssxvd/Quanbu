@@ -207,6 +207,7 @@ import expert11 from "@/assets/img/expert11.png";
 import riceImg from "@/assets/img/rice.png";
 import cornImg from "@/assets/img/jixinguo.jpg";
 import banner01 from "@/assets/img/banner01.png";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const expertAvatars = [
   expert01,
@@ -244,12 +245,7 @@ const openReserveDialog = (expert) => {
 };
 
 const getKnowledgeImg = (picPath) => {
-  if (!picPath) return knowledgeImg;
-  if (picPath.startsWith('http')) return picPath;
-  if (picPath.includes('/')) {
-    return '/api/file/' + picPath;
-  }
-  return '/src/assets/img/' + picPath;
+  return getImageUrl(picPath);
 };
 
 const viewKnowledgeDetail = (item) => {

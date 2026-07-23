@@ -216,6 +216,7 @@ import bank09 from "@/assets/img/zgpayh.png";
 import bank10 from "@/assets/img/zgmsyh.png";
 import bank11 from "@/assets/img/zgyh.png";
 import { useStore } from "vuex";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const store = useStore();
 const router = useRouter();
@@ -299,7 +300,7 @@ const imgArray = ref([
           }
         });
         if (!matched && item.picture) {
-          item['icon'] = `${store.state.imgShowRoad}/file/bank/${item.picture}`;
+          item['icon'] = getImageUrl(item.picture) || matched || bank01;
         } else {
           item['icon'] = matched || bank01;
         }

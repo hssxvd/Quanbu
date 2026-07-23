@@ -171,6 +171,7 @@ import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import Pagination from "./Pagination.vue";
 import { PlusIcon } from "lucide-vue-next";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const store = useStore();
 
@@ -201,16 +202,6 @@ const addSpecRow = () => {
 
 const removeSpecRow = (index) => {
   publishForm.specs.splice(index, 1);
-};
-
-const getImageUrl = (picture) => {
-  if (!picture) {
-    return "/src/assets/img/rice.png";
-  }
-  if (picture.startsWith("http")) {
-    return picture;
-  }
-  return store.state.imgShowRoad + "/file/order/" + picture;
 };
 
 onMounted(async () => {

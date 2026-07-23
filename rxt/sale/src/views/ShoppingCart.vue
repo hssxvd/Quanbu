@@ -110,7 +110,7 @@
                 <td class="px-6 py-4">
                   <div class="flex items-center space-x-4">
                     <img
-                      :src="`${store.state.imgShowRoad}/file/order/${item.picture}`"
+                      :src="getImageUrl(item.picture)"
                       class="w-16 h-16 object-cover rounded"
                       @error="handleImageError"
                     />
@@ -279,6 +279,7 @@ import { ref, computed, onMounted, reactive } from 'vue'
 import { apiClient } from '../api/apiService.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useStore } from 'vuex'
+import { getImageUrl } from '../utils/imageUtils.js'
 import { provinces, cities, districts } from '../data/areaData.js'
 
 const store = useStore()
