@@ -6,10 +6,32 @@
     <!-- 登录卡片 -->
     <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative z-10">
       <div class="text-center mb-8">
-        <h1 class="text-2xl font-bold text-[#007029]">融销通</h1>
-        <p class="text-gray-600 mt-2">助力农业发展，共创美好未来</p>
-      </div>
-      
+      <h1 class="text-2xl font-bold text-[#007029]">融销通</h1>
+      <p class="text-gray-600 mt-2">助力农业发展，共创美好未来</p>
+    </div>
+    
+        <!-- 角色选择 -->
+        <div class="mb-4">
+          <label for="role" class="block text-sm font-medium text-gray-700 mb-1">登录身份</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+            </span>
+            <select
+              id="role"
+              v-model="selectedRole"
+              class="pl-10 w-full py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007029] focus:border-transparent appearance-none bg-white"
+            >
+              <option value="" disabled>请选择登录身份</option>
+              <option value="user">普通用户</option>
+              <option value="expert">专家</option>
+              <option value="admin">管理员</option>
+            </select>
+          </div>
+        </div>
+        
         <!-- 账号输入 -->
         <div class="mb-4">
           <label for="username" class="block text-sm font-medium text-gray-700 mb-1">账号</label>
@@ -63,13 +85,13 @@
             </button>
           </div>
         </div>
-        
+
         <!-- 记住密码 -->
         <div class="flex items-center mb-6">
-          <input 
-            id="remember" 
-            v-model="rememberMe" 
-            type="checkbox" 
+          <input
+            id="remember"
+            v-model="rememberMe"
+            type="checkbox"
             class="h-4 w-4 text-[#007029] focus:ring-[#007029] border-gray-300 rounded"
           />
           <label for="remember" class="ml-2 block text-sm text-gray-700">记住密码</label>
@@ -111,6 +133,7 @@ const backgroundImage = riceImg;
 // 表单数据
 const username = ref('');
 const password = ref('');
+const selectedRole = ref('user');
 const rememberMe = ref(false);
 const showPassword = ref(false);
 
@@ -137,9 +160,14 @@ const param = ref({
 // 用户登录
 const userLogin = async () => {
   try {
+    if (!selectedRole.value) {
+      ElMessage.warning('请选择登录身份');
+      return;
+    }
     param.value = {
-    username: username.value,
-    password: password.value
+      username: username.value,
+      password: password.value,
+      role: selectedRole.value
     };
     const response = await apiClient.post(`user/login`, param.value, {
       headers: {
@@ -152,10 +180,11 @@ const userLogin = async () => {
 
         const [, payload] = response.data.split('.');
         const decoded = Base64.decode(payload);
-        const { nickname, avatar, role } = JSON.parse(decoded);
-    
+        const { username, nickname, avatar, role } = JSON.parse(decoded);
+
        store.commit('updateLoginUserNickname', nickname);
        store.commit('updateLoginUserAvatar', avatar);
+       store.commit('updateLoginUsername', username);
        store.commit('updateRole', role);
 
         //跳转至首页

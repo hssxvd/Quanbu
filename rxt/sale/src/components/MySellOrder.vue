@@ -40,8 +40,19 @@
               <p class="text-gray-500 text-xs mb-2">状态：{{ getStatusText(item.purchaseStatus) }}</p>
               <p v-if="item.buyerName" class="text-gray-500 text-xs mb-2">买家：{{ item.buyerName }}</p>
               <p class="text-gray-500 text-xs mb-2">成交时间：{{ formatTime(item.createTime) }}</p>
-              <div class="flex justify-between items-center">
+              <div class="flex justify-between items-center mt-2">
                 <span class="text-red-600 font-medium">¥{{ item.sumPrice }}</span>
+                <div class="flex gap-2">
+                  <button
+                    v-if="item.purchaseStatus === 1"
+                    class="bg-[#007029] text-white text-xs px-3 py-1 rounded hover:bg-[#005d23] transition-colors"
+                    @click.stop="deliverOrder(item)"
+                  >
+                    发货
+                  </button>
+                  <span v-else-if="item.purchaseStatus === 2" class="text-orange-600 text-xs">已发货</span>
+                  <span v-else-if="item.purchaseStatus === 3" class="text-green-600 text-xs">已收货</span>
+                </div>
               </div>
             </div>
           </div>
@@ -70,6 +81,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { apiClient } from "../api/apiService.js";
 import { useStore } from "vuex";
+import { ElMessage } from 'element-plus';
 import Pagination from "./Pagination.vue";
 
 const store = useStore();
@@ -94,7 +106,13 @@ const getImageUrl = (picture) => {
 };
 
 const getStatusText = (status) => {
-  return status === 1 ? "已成交" : status === 0 ? "待处理" : "未知";
+  const statusMap = {
+    1: "已下单",
+    2: "已发货",
+    3: "已收货",
+    4: "已完成"
+  };
+  return statusMap[status] || "未知";
 };
 
 const formatTime = (time) => {
@@ -125,6 +143,21 @@ const loadData = async () => {
 
 const searchGoods = () => {
   loadData();
+};
+
+const deliverOrder = async (item) => {
+  try {
+    const response = await apiClient.post(`/purchase/deliver/${item.purchaseId}`);
+    if (response.flag) {
+      ElMessage.success("发货成功");
+      await loadData();
+    } else {
+      ElMessage.error(response.message || "发货失败");
+    }
+  } catch (error) {
+    console.error("发货失败:", error);
+    ElMessage.error("发货失败");
+  }
 };
 
 const setCurrentPage = (page) => {

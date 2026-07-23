@@ -16,4 +16,6 @@ public interface SellPurchaseDao {
 
     List<MySellPurchase> selectByOwnName(@Param("ownName")String ownName);
 
+    int updateStatus(@Param("purchaseId")Integer purchaseId, @Param("purchaseStatus")Integer purchaseStatus);
+
 }

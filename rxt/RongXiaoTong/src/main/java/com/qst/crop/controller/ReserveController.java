@@ -89,7 +89,8 @@ public class ReserveController {
     @Operation(summary = "根据用户查询预约情况")
     @GetMapping("/selectByKind/{kind}")
     public Result selectByKind(@PathVariable("kind") String kind) {
-        List<Reserve> reserves = reserveService.selectByReserve(kind);
+        String type = "expert".equals(kind) ? "expert" : "questioner";
+        List<Reserve> reserves = reserveService.selectByReserve(type);
         return new Result(true, StatusCode.OK, "查询成功", reserves);
     }
 }

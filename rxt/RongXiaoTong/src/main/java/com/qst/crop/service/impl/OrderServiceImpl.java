@@ -56,6 +56,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> searchMyGoodsByKeys(String ownName, String keys, Integer pageNum, Integer pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        return orderDao.searchMyGoodsByKeys(ownName, keys, offset, pageSize);
+    }
+
+    @Override
     public void takeDown(String orderId) {
         orderDao.takeDown(orderId);
     }

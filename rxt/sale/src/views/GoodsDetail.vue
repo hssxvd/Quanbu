@@ -35,15 +35,49 @@
 
         <!-- 价格区域 -->
         <div class="mb-6">
-          <span class="text-[#007029] text-3xl font-bold">¥{{ price}}</span>
-          <span v-if="product.price" class="text-gray-400 line-through ml-2">
-            ¥{{ (price*1.5) }}
+          <span class="text-[#007029] text-3xl font-bold">¥{{ totalPrice }}</span>
+          <span v-if="quantity > 1" class="text-gray-500 text-sm ml-2">
+            (¥{{ currentPrice }} × {{ quantity }})
           </span>
         </div>
 
         <!-- 发布信息 -->
         <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 mb-6">
           <div>发布时间: {{ updateTime }}</div>
+          <div>卖家: {{ ownName || '未知' }}</div>
+        </div>
+        <div v-if="isOwnProduct" class="mb-4 text-sm text-orange-600 bg-orange-50 px-3 py-2 rounded">
+          这是您自己发布的商品，无法购买
+        </div>
+
+        <!-- 规格选择 -->
+        <div v-if="specList.length > 0" class="mb-6">
+          <h3 class="font-medium mb-3">规格</h3>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="spec in specList"
+              :key="spec.specId"
+              @click="selectSpec(spec)"
+              :class="[
+                'px-4 py-2 border rounded-md text-sm transition-colors',
+                selectedSpec && selectedSpec.specId === spec.specId
+                  ? 'border-[#007029] text-[#007029] bg-[#f0f9f2]'
+                  : 'border-gray-300 text-gray-700 hover:border-[#007029]',
+                (spec.specStock != null && spec.specStock <= 0) ? 'opacity-50 cursor-not-allowed' : ''
+              ]"
+              :disabled="spec.specStock != null && spec.specStock <= 0"
+            >
+              {{ spec.specName }}
+              <span class="text-xs ml-1">¥{{ spec.specPrice }}</span>
+              <span v-if="spec.specStock != null && spec.specStock <= 0" class="text-xs text-red-500 ml-1">(无货)</span>
+            </button>
+          </div>
+          <div v-if="selectedSpec" class="text-xs text-gray-500 mt-2">
+            库存: {{ selectedSpec.specStock }}件
+          </div>
+        </div>
+        <div v-else class="mb-6 text-sm text-gray-400">
+          该商品暂无规格选项
         </div>
 
         <!-- 互动按钮 -->
@@ -81,10 +115,18 @@
 
         <!-- 购买按钮 -->
         <div class="flex gap-4">
-          <button class="px-8 py-3 bg-[#007029] text-white rounded-md hover:bg-[#005d23] transition-colors" @click="buyNow()">
+          <button
+            class="px-8 py-3 bg-[#007029] text-white rounded-md hover:bg-[#005d23] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            @click="buyNow()"
+            :disabled="isOwnProduct"
+          >
             立即购买
           </button>
-          <button class="px-8 py-3 border border-[#007029] text-[#007029] rounded-md hover:bg-[#f0f9f2] transition-colors" @click="addShopCart()">
+          <button
+            class="px-8 py-3 border border-[#007029] text-[#007029] rounded-md hover:bg-[#f0f9f2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            @click="addShopCart()"
+            :disabled="isOwnProduct"
+          >
             加入购物车
           </button>
         </div>
@@ -122,28 +164,32 @@
         
         <div v-if="activeTab === 'specs'" class="prose max-w-none">
           <h3>规格参数</h3>
-          <table class="w-full border-collapse">
+          <table v-if="specList.length > 0" class="w-full border-collapse">
             <tbody>
-              <tr v-for="(spec, index) in product.specTable" :key="index" 
+              <tr v-for="(spec, index) in specList" :key="spec.specId"
                   :class="index % 2 === 0 ? 'bg-gray-50' : ''">
-                <td class="py-3 px-4 border border-gray-200 font-medium">{{ spec.name }}</td>
-                <td class="py-3 px-4 border border-gray-200">{{ spec.value }}</td>
+                <td class="py-3 px-4 border border-gray-200 font-medium">{{ spec.specName }}</td>
+                <td class="py-3 px-4 border border-gray-200">¥{{ spec.specPrice }} / 库存{{ spec.specStock }}件</td>
               </tr>
             </tbody>
           </table>
+          <div v-else class="text-gray-500 text-center py-8">
+            暂无规格参数
+          </div>
         </div>
-        
+
         <div v-if="activeTab === 'comments'" class="prose max-w-none">
           <h3>用户评价</h3>
-          <div v-if="product.comments.length > 0">
-            <div v-for="(comment, index) in product.comments" :key="index" 
+          <div v-if="comments.length > 0">
+            <div v-for="(comment, index) in comments" :key="index"
                  class="border-b border-gray-100 py-4">
               <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-                  <img v-if="comment.avatar" :src="comment.avatar" alt="用户头像" class="w-full h-full object-cover" />
+                <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center text-xs text-gray-500">
+                  {{ comment.buyerName ? comment.buyerName.charAt(0) : '用' }}
                 </div>
-                <div class="font-medium">{{ comment.username }}</div>
-                <div class="text-sm text-gray-500">{{ formatDate(comment.date) }}</div>
+                <div class="font-medium">{{ comment.buyerName || '匿名用户' }}</div>
+                <div class="text-sm text-yellow-500">{{ '★'.repeat(comment.rating || 5) }}</div>
+                <div class="text-sm text-gray-500">{{ formatDate(comment.createTime) }}</div>
               </div>
               <div>{{ comment.content }}</div>
             </div>
@@ -161,9 +207,12 @@
 <script setup>
 import { ThumbsUpIcon, StarIcon, MessageSquareIcon, MinusIcon, PlusIcon } from 'lucide-vue-next';
 import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { apiClient } from "../api/apiService.js";
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -174,6 +223,14 @@ let price = ref();
 let content = ref();
 let picture = ref();
 let updateTime = ref();
+let ownName = ref('');
+
+// 规格相关
+const specList = ref([]);
+const selectedSpec = ref(null);
+const currentPrice = ref(0);
+const originalPrice = ref(0);
+const comments = ref([]);
 
 onMounted(async () => {
   orderId.value = route.query.orderId;
@@ -181,9 +238,55 @@ onMounted(async () => {
   price.value = route.query.price;
   content.value = route.query.content;
   picture.value = route.query.picture;
+  ownName.value = route.query.ownName || '';
   if (route.query.updateTime) {
     updateTime.value = route.query.updateTime.split('T')[0];
   }
+  currentPrice.value = Number(price.value) || 0;
+  originalPrice.value = (Number(price.value) || 0) * 1.5;
+
+  // 加载商品规格
+  if (orderId.value) {
+    try {
+      const res = await apiClient.get(`/spec/list/${orderId.value}`);
+      if (res.flag && res.data) {
+        specList.value = res.data;
+        // 默认选中第一个有库存的规格
+        const available = specList.value.find(s => s.specStock == null || s.specStock > 0);
+        if (available) {
+          selectedSpec.value = available;
+          currentPrice.value = Number(available.specPrice);
+        }
+      }
+    } catch (err) {
+      console.error("加载规格失败", err);
+    }
+
+    // 加载商品评价
+    try {
+      const res = await apiClient.get(`/comment/order/${orderId.value}`);
+      if (res.flag && res.data) {
+        comments.value = res.data;
+      }
+    } catch (err) {
+      console.error("加载评价失败", err);
+    }
+  }
+});
+
+const selectSpec = (spec) => {
+  if (spec.specStock != null && spec.specStock <= 0) return;
+  selectedSpec.value = spec;
+  currentPrice.value = Number(spec.specPrice);
+};
+
+const isOwnProduct = computed(() => {
+  const currentUser = store.state.loginUsername;
+  return ownName.value && currentUser && ownName.value === currentUser;
+});
+
+const totalPrice = computed(() => {
+  return (currentPrice.value * quantity.value).toFixed(2);
 });
 
 
@@ -225,7 +328,6 @@ const product = {
 
 // 状态管理
 const quantity = ref(1);
-const selectedSpec = ref(product.specifications[0]);
 const activeTab = ref('details');
 
 const tabs = [
@@ -246,7 +348,10 @@ const decreaseQuantity = () => {
 };
 
 const formatDate = (date) => {
-  return date.toISOString().split('T')[0];
+  if (!date) return '';
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '';
+  return d.toISOString().split('T')[0];
 };
 
 const goBack = () => {
@@ -277,8 +382,16 @@ const buyNow = async() => {
     ElMessage.error("商品信息异常，请刷新页面重试");
     return;
   }
+  if (specList.value.length > 0 && !selectedSpec.value) {
+    ElMessage.warning("请选择规格");
+    return;
+  }
   try {
-    const response = await apiClient.post(`/purchase/directBuy/${orderId.value}`);
+    const params = {};
+    if (selectedSpec.value) {
+      params.specId = selectedSpec.value.specId;
+    }
+    const response = await apiClient.post(`/purchase/directBuy/${orderId.value}`, null, { params });
     if (response.flag) {
       ElMessage.success("购买成功！");
       await ElMessageBox.confirm(

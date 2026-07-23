@@ -22,6 +22,8 @@ public interface OrderService {
 
     List<Order> searchMyNeedsByKeys(String ownName, String keys, Integer pageNum, Integer pageSize);
 
+    List<Order> searchMyGoodsByKeys(String ownName, String keys, Integer pageNum, Integer pageSize);
+
     void takeDown(String orderId);
 
     void takeUp(String orderId);

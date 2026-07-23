@@ -64,17 +64,40 @@
       </div>
     </div>
 
-    <el-dialog v-model="showPublishDialog" title="发布商品" width="500px">
-      <el-form :model="publishForm" label-width="80px">
+    <el-dialog v-model="showPublishDialog" title="发布商品" width="600px">
+      <el-form :model="publishForm" label-width="100px">
         <el-form-item label="商品标题">
           <el-input v-model="publishForm.title" placeholder="2-8字" />
         </el-form-item>
         <el-form-item label="详细介绍">
           <el-input v-model="publishForm.description" type="textarea" placeholder="10-150字" />
         </el-form-item>
-        <el-form-item label="价格">
-          <el-input v-model="publishForm.price" placeholder="请输入价格" />
+        <el-form-item label="默认价格">
+          <el-input v-model="publishForm.price" placeholder="请输入默认价格（无规格时使用）" />
         </el-form-item>
+
+        <!-- 规格设置 -->
+        <el-form-item label="商品规格">
+          <div class="w-full">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-gray-500">设置多个规格（如3斤、5斤、9斤），不同规格不同价格</span>
+              <el-button size="small" type="primary" @click="addSpecRow">
+                <el-icon><PlusIcon /></el-icon>
+                添加规格
+              </el-button>
+            </div>
+            <div v-for="(spec, index) in publishForm.specs" :key="index" class="flex items-center gap-2 mb-2">
+              <el-input v-model="spec.specName" placeholder="规格名（如：3斤装）" class="flex-1" />
+              <el-input v-model="spec.specPrice" placeholder="价格" class="w-28" />
+              <el-input v-model="spec.specStock" placeholder="库存" class="w-20" />
+              <el-button size="small" type="danger" @click="removeSpecRow(index)">删除</el-button>
+            </div>
+            <div v-if="publishForm.specs.length === 0" class="text-xs text-gray-400">
+              未设置规格时使用默认价格
+            </div>
+          </div>
+        </el-form-item>
+
         <el-form-item label="商品图片">
           <el-upload
             ref="uploadRef"
@@ -129,7 +152,8 @@ const publishForm = ref({
   title: '',
   description: '',
   price: '',
-  images: []
+  images: [],
+  specs: []
 });
 
 const handleImageUpload = (file) => {
@@ -138,13 +162,22 @@ const handleImageUpload = (file) => {
 
 const uploadRef = ref();
 
+const addSpecRow = () => {
+  publishForm.value.specs.push({ specName: '', specPrice: '', specStock: 999 });
+};
+
+const removeSpecRow = (index) => {
+  publishForm.value.specs.splice(index, 1);
+};
+
 const handleCancel = () => {
   showPublishDialog.value = false;
   publishForm.value = {
     title: '',
     description: '',
     price: '',
-    images: []
+    images: [],
+    specs: []
   };
   if (uploadRef.value) {
     uploadRef.value.clearFiles();
@@ -163,6 +196,15 @@ const submitPublish = async () => {
   if (publishForm.value.description.length < 10 ||publishForm.value.description.length>150) {
     ElMessage.error('详细介绍长度在10-150字之间');
     return;
+  }
+
+  // 校验规格
+  const validSpecs = publishForm.value.specs.filter(s => s.specName && s.specPrice);
+  for (const spec of validSpecs) {
+    if (isNaN(Number(spec.specPrice)) || Number(spec.specPrice) <= 0) {
+      ElMessage.error('规格价格必须为正数');
+      return;
+    }
   }
 
   try {
@@ -195,7 +237,8 @@ const submitPublish = async () => {
       content: publishForm.value.description,
       price: publishForm.value.price,
       type: 'goods',
-      picture: uploadedImages.join(',')
+      picture: uploadedImages.join(','),
+      specs: validSpecs
     };
 
     const responseOrder = await apiClient.post(
@@ -220,7 +263,8 @@ const submitPublish = async () => {
       title: '',
       description: '',
       price: '',
-      images: []
+      images: [],
+      specs: []
     };
     if (uploadRef.value) {
       uploadRef.value.clearFiles();

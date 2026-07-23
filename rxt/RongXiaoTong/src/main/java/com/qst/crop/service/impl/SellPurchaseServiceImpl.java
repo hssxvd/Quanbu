@@ -34,4 +34,9 @@ public class SellPurchaseServiceImpl implements SellPurchaseService {
         String name = principal.getUsername();
         return sellPurchaseDao.selectByOwnName(name);
     }
+
+    @Override
+    public void updateStatus(Integer purchaseId, Integer purchaseStatus) {
+        sellPurchaseDao.updateStatus(purchaseId, purchaseStatus);
+    }
 }

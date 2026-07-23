@@ -85,9 +85,10 @@
               <p class="text-m text-gray-700 mb-2 line-clamp-2 h-10">
                 {{ product.title || '商品名称' }}
               </p>
-              <p class="text-sm text-gray-600 mb-2 line-clamp-2 h-10">
+              <p class="text-sm text-gray-600 mb-1 line-clamp-2 h-10">
                 {{ product.content || '商品描述' }}
               </p>
+              <p class="text-gray-500 text-xs mb-1">卖家：{{ product.ownName || '未知' }}</p>
               <p class="text-red-500 font-medium">¥{{ product.price || '0' }}</p>
             </div>
           </div>
@@ -144,7 +145,7 @@ const getImageUrl = (picture) => {
 };
 
 const goodsDetail = (item) => {
-  router.push(`/goodsDetail?orderId=${item.orderId}&title=${item.title}&price=${item.price}&content=${item.content}&picture=${item.picture}&updateTime=${item.updateTime}`);
+  router.push(`/goodsDetail?orderId=${item.orderId}&title=${item.title}&price=${item.price}&content=${item.content}&picture=${item.picture}&updateTime=${item.updateTime}&ownName=${item.ownName || ''}`);
 };
 
 const searchGoods = () => {

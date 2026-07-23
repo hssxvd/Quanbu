@@ -133,4 +133,11 @@
         WHERE sp.own_name = #{ownName,jdbcType=VARCHAR}
         ORDER BY sp.create_time DESC
     </select>
+
+    <update id="updateStatus">
+        UPDATE tb_sell_purchase
+        SET purchase_status = #{purchaseStatus,jdbcType=INTEGER},
+            update_time = NOW()
+        WHERE purchase_id = #{purchaseId,jdbcType=INTEGER}
+    </update>
 </mapper>
