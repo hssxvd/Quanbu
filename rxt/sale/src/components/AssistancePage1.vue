@@ -44,16 +44,12 @@ import { defineComponent } from "vue";
 import { apiClient } from "../api/apiService.js";
 import { useRouter } from "vue-router";
 import Pagination from "../components/Pagination.vue";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const router = useRouter();
 
 const getKnowledgeImg = (picPath) => {
-  if (!picPath) return "";
-  if (picPath.startsWith("http")) return picPath;
-  if (picPath.includes('/')) {
-    return '/api/file/' + picPath;
-  }
-  return '/src/assets/img/' + picPath;
+  return getImageUrl(picPath);
 };
 
 // 分页状态

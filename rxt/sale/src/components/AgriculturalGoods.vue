@@ -72,19 +72,10 @@ import { apiClient } from "../api/apiService.js";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import Pagination from "../components/Pagination.vue";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const router = useRouter();
 const store = useStore();
-
-const getImageUrl = (picture) => {
-  if (!picture) {
-    return "/src/assets/img/rice.png";
-  }
-  if (picture.startsWith("http")) {
-    return picture;
-  }
-  return store.state.imgShowRoad + "/file/order/" + picture;
-};
 
 // 检索关键字内容
 const searchKey = ref("");

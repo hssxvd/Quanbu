@@ -462,7 +462,7 @@ import teaImg from "@/assets/img/tea.png";
 import watermelonImg from "@/assets/img/watermelon_20250513154759.png";
 import yangcongImg from "@/assets/img/yangcong_20250513154843.png";
 import zheergenImg from "@/assets/img/zheergen_20250513155020.png";
-import renshenguoImg from "@/assets/img/renshenguo.jpg";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const router = useRouter();
 
@@ -561,7 +561,7 @@ onMounted(async () => {
           }
         });
         if (!matched && item.picture) {
-          item['icon'] = `${store.state.imgShowRoad}/file/bank/${item.picture}`;
+          item['icon'] = getImageUrl(item.picture) || matched || bank01;
         } else {
           item['icon'] = matched || bank01;
         }
@@ -723,8 +723,8 @@ onMounted(async () => {
       console.log('knowledgeTwo[0].id:', knowledgeTwo.value[0]?.id);
       const p1 = tempquesKnowledge[0]?.picPath || '';
       const p2 = tempquesKnowledge[1]?.picPath || '';
-      pic01.value = p1.includes('/') ? '/api/file/' + p1 : '/src/assets/img/' + (p1 || 'rice.png');
-      pic02.value = p2.includes('/') ? '/api/file/' + p2 : '/src/assets/img/' + (p2 || 'corn.png');
+      pic01.value = getImageUrl(p1);
+      pic02.value = getImageUrl(p2);
       console.log('knowledgeTwo.length:', knowledgeTwo.value.length);
     } else {
       throw new Error('No data');

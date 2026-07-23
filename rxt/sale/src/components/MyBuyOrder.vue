@@ -67,6 +67,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { apiClient } from "../api/apiService.js";
 import { useStore } from "vuex";
+import { getImageUrl } from "../utils/imageUtils.js";
 import Pagination from "./Pagination.vue";
 
 const store = useStore();
@@ -79,16 +80,6 @@ const pagination = reactive({
   pageSize: 10,
   total: 0,
 });
-
-const getImageUrl = (picture) => {
-  if (!picture) {
-    return "/src/assets/img/rice.png";
-  }
-  if (picture.startsWith("http")) {
-    return picture;
-  }
-  return store.state.imgShowRoad + "/file/order/" + picture;
-};
 
 const getStatusText = (status) => {
   return status === 1 ? "已完成" : status === 0 ? "待处理" : "未知";

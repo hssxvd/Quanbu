@@ -35,7 +35,7 @@
         <!-- 商品图片 -->
         <div class="relative w-full aspect-square overflow-hidden bg-gray-100">
           <img
-            :src="$store.state.imgShowRoad + '/file/order/' + product.picture"
+            :src="getImageUrl(product.picture)"
             class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
           <!-- 求购标签 -->
@@ -123,6 +123,7 @@ import { apiClient } from "../api/apiService.js";
 import { useRouter } from "vue-router";
 import Pagination from "../components/Pagination.vue";
 import { ElMessage } from 'element-plus';
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const router = useRouter();
 

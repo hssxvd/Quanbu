@@ -141,6 +141,7 @@ import { apiClient } from "../api/apiService.js";
 import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import Pagination from "./Pagination.vue";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const store = useStore();
 
@@ -163,16 +164,6 @@ const publishForm = reactive({
   description: "",
   price: "",
 });
-
-const getImageUrl = (picture) => {
-  if (!picture) {
-    return "/src/assets/img/rice.png";
-  }
-  if (picture.startsWith("http")) {
-    return picture;
-  }
-  return store.state.imgShowRoad + "/file/order/" + picture;
-};
 
 onMounted(async () => {
   await loadData();

@@ -243,6 +243,7 @@ import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Base64 } from "js-base64";
+import { getImageUrl } from "../utils/imageUtils.js";
 
 const avatarMap = {
   'expert01.png': expert01,
@@ -255,7 +256,7 @@ const avatarMap = {
 const getAvatarSrc = (avatar) => {
   if (!avatar) return expert01;
   if (avatarMap[avatar]) return avatarMap[avatar];
-  return `${store.state.imgShowRoad}/file/avatar/${avatar}`;
+  return getImageUrl(avatar);
 };
 
 const store = useStore();
