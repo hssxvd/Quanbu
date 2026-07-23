@@ -67,7 +67,7 @@
         </div>
         
         <!-- 我的发布 -->
-        <div v-if="!$store.getters.isAdmin"
+        <div v-if="!$store.getters.isAdmin && !$store.getters.isExpert"
           @click="toggleMenu('myPosts')" 
           class="flex items-center justify-between text-gray-700 font-medium p-2 mt-4 cursor-pointer"
           :class="expandedMenus.myPosts ? 'text-[#007029]' : 'text-gray-700'"
@@ -95,7 +95,7 @@
         </div>
         
         <!-- 我的发布子菜单 -->
-        <div v-if="expandedMenus.myPosts && !$store.getters.isAdmin" class="ml-8 space-y-2 mt-2">
+        <div v-if="expandedMenus.myPosts && !$store.getters.isAdmin && !$store.getters.isExpert" class="ml-8 space-y-2 mt-2">
           <div 
             @click="ProductsClick();activeSection = 'products'" 
             class="flex items-center space-x-2 font-medium p-2 rounded-md cursor-pointer"

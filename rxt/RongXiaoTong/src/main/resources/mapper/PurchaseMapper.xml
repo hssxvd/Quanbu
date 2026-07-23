@@ -86,6 +86,7 @@
         SELECT DISTINCT
             tb1.purchase_id as purchaseId,
             tu.real_name as ownName,
+            MAX(tb3.own_name) as sellerName,
             tb1.purchase_type as purchaseType,
             tb1.total_price as totalPrice,
             tu.address as address,
@@ -93,7 +94,8 @@
             tb1.create_time as createTime,
             tb1.update_time as updateTime,
             MAX(tb3.picture) as picture,
-            MAX(tb3.title) as title
+            MAX(tb3.title) as title,
+            MAX(tb3.order_id) as orderId
         FROM tb_purchase AS tb1
         LEFT JOIN tb_purchase_detail AS tb2 ON tb1.purchase_id = tb2.purchase_id
         LEFT JOIN tb_order AS tb3 ON tb2.order_id = tb3.order_id
@@ -101,4 +103,11 @@
         WHERE tb1.own_name = #{name}
         GROUP BY tb1.purchase_id, tb1.own_name, tb1.purchase_type, tb1.total_price, tu.address, tb1.purchase_status, tb1.create_time, tb1.update_time
     </select>
+
+    <update id="updateStatus">
+        UPDATE tb_purchase
+        SET purchase_status = #{purchaseStatus,jdbcType=INTEGER},
+            update_time = NOW()
+        WHERE purchase_id = #{purchaseId,jdbcType=INTEGER}
+    </update>
 </mapper>

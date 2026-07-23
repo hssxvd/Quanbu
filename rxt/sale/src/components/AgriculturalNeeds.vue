@@ -160,8 +160,8 @@ const needsData = ref([]);
 const selectData = async ({ page }) => {
   try {
     //检索URL
-    const url1 = `/order/search/needs/${page}`;
-    const url2 = `/order/searchNeedsByKeys/${searchKey.value}/${page}`;
+    const url1 = `/order/public/needs/${page}`;
+    const url2 = `/order/public/searchNeedsByKeys/${searchKey.value}/${page}`;
     const url = searchFlag.value == 1 && searchKey.value ? url2 : url1;
     
     const response = await apiClient.get(url);

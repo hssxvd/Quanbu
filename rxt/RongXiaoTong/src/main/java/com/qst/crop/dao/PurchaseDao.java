@@ -16,4 +16,6 @@ public interface PurchaseDao {
 
     List<MyPurchase> selectByPurchase(@Param("name")String name);
 
+    int updateStatus(@Param("purchaseId")Integer purchaseId, @Param("purchaseStatus")Integer purchaseStatus);
+
 }

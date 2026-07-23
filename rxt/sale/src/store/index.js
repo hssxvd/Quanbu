@@ -10,6 +10,7 @@ export default createStore({
     user: '',
     loginUserNickname: localStorage.getItem('loginUserNickname') || '',
     loginUserAvatar: localStorage.getItem('loginUserAvatar') || '',
+    loginUsername: localStorage.getItem('loginUsername') || '',
     activeIndex: '1',
     publishActiveIndex: '1',
     userActiveIndex: '1-1',
@@ -55,6 +56,10 @@ export default createStore({
     updateLoginUserAvatar(state, value) {
       state.loginUserAvatar = value
       localStorage.setItem('loginUserAvatar', value)
+    },
+    updateLoginUsername(state, value) {
+      state.loginUsername = value
+      localStorage.setItem('loginUsername', value)
     },
     updateRole(state, value) {
       state.role = value

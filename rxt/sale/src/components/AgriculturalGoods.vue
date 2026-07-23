@@ -38,7 +38,8 @@
           <p class="text-xs text-gray-700 line-clamp-2">
             {{ product.content }}
           </p>
-          <p class="text-red-500 font-bold mt-2">¥{{ product.price }}</p>
+          <p class="text-gray-500 text-xs mt-1">卖家：{{ product.ownName || '未知' }}</p>
+          <p class="text-red-500 font-bold mt-1">¥{{ product.price }}</p>
         </div>
       </div>
     </div>
@@ -156,7 +157,7 @@ const searchGoods = ()=> {
 
 
 const goodsDetail = (item)=> {
-  router.push(`/home/goodsDetail?orderId=${item.orderId}&title=${item.title}&price=${item.price}&content=${item.content}&picture=${item.picture}&updateTime=${item.updateTime}`)
+  router.push(`/home/goodsDetail?orderId=${item.orderId}&title=${item.title}&price=${item.price}&content=${item.content}&picture=${item.picture}&updateTime=${item.updateTime}&ownName=${item.ownName || ''}`)
 
 };
 

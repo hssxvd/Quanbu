@@ -2,6 +2,7 @@ package com.qst.crop.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qst.crop.security.entity.AuthenticationBean;
+import com.qst.crop.security.entity.RoleAuthenticationDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,13 +27,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 AuthenticationBean authenticationBean = mapper.readValue(is, AuthenticationBean.class);
                 String username = authenticationBean.getUsername();
                 String password = authenticationBean.getPassword();
+                String role = authenticationBean.getRole();
                 authRequest = new UsernamePasswordAuthenticationToken(
                         StringUtils.hasText(username) ? username.trim() : username,
                         password != null ? password.trim() : null);
+                // 将角色信息存入认证详情
+                authRequest.setDetails(new RoleAuthenticationDetails(request, role));
             } catch (IOException e) {
                 throw new AuthenticationServiceException("登录请求格式错误", e);
             }
-            setDetails(request, authRequest);
             return this.getAuthenticationManager().authenticate(authRequest);
         }
         return super.attemptAuthentication(request, response);

@@ -6,9 +6,8 @@ import java.util.Date;
 public class MyPurchase {
 
     private Integer purchaseId;
-
     private String ownName;
-
+    private String sellerName;
     private Integer purchaseType;
 
     private BigDecimal totalPrice;
@@ -24,6 +23,8 @@ public class MyPurchase {
     private String picture;
 
     private String title;
+
+    private Integer orderId;
 
     public Integer getPurchaseId() {
         return purchaseId;
@@ -103,5 +104,21 @@ public class MyPurchase {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getSellerName() {
+        return sellerName;
+    }
+
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
     }
 }
